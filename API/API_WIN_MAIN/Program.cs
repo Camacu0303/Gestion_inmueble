@@ -10,7 +10,15 @@ builder.Services.AddDbContext<AplicationDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") // URL de tu frontend
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
