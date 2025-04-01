@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApplication125.Models;
+using WEB.Models.PreProjectFiles;
 using WebApplication125.Services;
 
 namespace WebApplication125.Pages.Game

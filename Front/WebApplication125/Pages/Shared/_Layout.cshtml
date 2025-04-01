@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color:#D6BD98">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Snake</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -29,8 +29,8 @@
                     <div class="d-flex align-items-center">
                         @if (Context.Session.GetString("UserSession") == null)
                         {
-                            <a class="navbar-brand btn btn-secondary text-white" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
-                            <a class="navbar-brand btn btn-secondary text-white" asp-area="" asp-page="/Auth/Register">Registrarse</a>
+                            <a class="navbar-brand btn  text-white" style="background-color:#1A3636" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
+                            <a class="navbar-brand btn  text-white" style="background-color:#40534C" asp-area="" asp-page="/Auth/Register">Registrarse</a>
                         }
                         else
                         {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebApplication125.Models
+namespace WEB.Models.PreProjectFiles
 {
     public class Score
     {
@@ -10,7 +10,7 @@ namespace WebApplication125.Models
 
         public int eaten { get; set; }
 
-        public String duration { get; set; }
+        public string duration { get; set; }
 
         [ForeignKey("Usuario")]
         public int UserId { get; set; }

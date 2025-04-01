@@ -1,4 +1,4 @@
-﻿namespace WebApplication125.Models
+﻿namespace WEB.Models.PreProjectFiles
 {
     public class UserResponse
     {
