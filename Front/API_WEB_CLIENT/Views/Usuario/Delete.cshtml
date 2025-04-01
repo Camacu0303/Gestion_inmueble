@@ -1,0 +1,8 @@
+﻿@model API_WEB_CLIENT.Models.Usuario
+
+<h2>¿Seguro que deseas eliminar a @Model.Nombre?</h2>
+
+<form asp-action="DeleteConfirmed">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="@Url.Action("Index", "Usuario")" class="btn btn-secondary">Cancelar</a>
+</form>

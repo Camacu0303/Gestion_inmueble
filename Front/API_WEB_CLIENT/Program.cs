@@ -1,5 +1,11 @@
+using API_WEB_CLIENT.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient<UsuarioService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7039/"); // URL de tu API
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
