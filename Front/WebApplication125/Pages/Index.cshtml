@@ -1,0 +1,40 @@
+﻿@page
+@model WebApplication125.Pages.IndexModel
+
+@{
+    if (HttpContext.Session.GetString("UserSession") != null)
+    {
+        Response.Redirect("../Game/LeaderBoards");
+    }
+    ViewData["Title"] = "Lista de productos";
+}
+<div class="mt-0 mb-0" style="position: relative; width: 100%; margin: 6px 0;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Snake_can_be_completed.gif"
+         alt="Culebra"
+         style="width: 100%; height: 350px; object-fit: cover;">
+    <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; background-color: rgba(128, 128, 128, 0.7); padding: 20px; border-radius: 10px;">
+        <h1 class="display-4">Snake</h1>
+        <p>
+            ¿Quieres jugar? ¡<a class="text-white" asp-area="" asp-page="/Auth/Register">Registrate</a> o <a class="text-white" asp-area="" asp-page="/Auth/Login">Inicia sesión</a> para empezar!
+        </p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <h2>La Historia de Snake</h2>
+    <p>
+        En un mundo digital lleno de retos y obstáculos, existía una pequeña serpiente llamada Serpentina. Desde su nacimiento, Serpentina soñaba con recorrer un vasto y misterioso laberinto, donde las frutas deliciosas crecían en cada esquina. Sin embargo, había un problema: el laberinto estaba lleno de peligros, y la serpiente tenía que ser astuta y ágil para sobrevivir.
+    </p>
+    <p>
+        Un día, Serpentina decidió que era hora de aventurarse. Con valentía, se deslizó fuera de su refugio y se encontró en el laberinto. Su misión era clara: comer tantas frutas como pudiera para crecer y volverse más fuerte. Cada vez que devoraba una fruta, su cuerpo se alargaba, lo que le daba más energía y habilidades para sortear los obstáculos.
+    </p>
+    <p>
+        A medida que avanzaba, Serpentina se dio cuenta de que no estaba sola. Otras criaturas del laberinto la observaban, y algunas incluso intentaban detenerla. Pero Serpentina no se dejó intimidar. Usando su ingenio, se movía rápidamente, cambiando de dirección y esquivando a sus enemigos, mientras buscaba la siguiente fruta brillante.
+    </p>
+    <p>
+        Con cada fruta que comía, el laberinto se volvía más complicado, pero también más emocionante. Serpentina enfrentaba nuevos desafíos y aprendía a adaptarse a cada uno de ellos. Con el tiempo, se convirtió en la serpiente más rápida y astuta del laberinto, ganando el respeto de todos los demás habitantes digitales.
+    </p>
+    <p>
+        Así comenzó la leyenda de Serpentina, la serpiente que nunca se rindió y siempre buscó más frutas en su camino. Su aventura continúa en el juego "Snake", donde los jugadores pueden unirse a ella y vivir la emoción de devorar frutas, crecer y conquistar el laberinto. ¿Te atreves a acompañar a Serpentina en su viaje?
+    </p>
+</div>

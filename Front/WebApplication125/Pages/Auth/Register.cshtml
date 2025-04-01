@@ -1,0 +1,65 @@
+﻿@page
+@model WebApplication125.Pages.Auth.RegisterModel
+@{
+
+   <div class="container">
+        <h2>Registro</h2>
+
+        <form method="post">
+
+            <div class="mb-3">
+                <label for="" class="form-label">Nombre de Usuario</label>
+                <input type="text"
+                       class="form-control"
+                       aria-describedby="helpId"
+                       placeholder="Ex: Yggdrasil03"
+                       asp-for="_UsuarioModels.username"
+                       required />
+                <small id="helpId" class="form-text text-muted">Help username</small>
+
+
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">Contraseña</label>
+                <input type="text"
+                       class="form-control"
+                       aria-describedby="helpId"
+                       placeholder="Ex: a#!!¨*312dDdc"
+                       asp-for="_UsuarioModels.contraseña"
+                       required />
+                <small id="helpId" class="form-text text-muted">Help contraseña</small>
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">Foto</label>
+                <input type="text"
+                       class="form-control"
+                       aria-describedby="helpId"
+                       placeholder="Ex: C:/asd/asd/a.png"
+                       asp-for="_UsuarioModels.picture"
+                       required />
+                <small id="helpId" class="form-text text-muted">Help picture</small>
+
+            </div>
+            <div class="mb-3">
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar
+                </button>
+
+
+            </div>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                <strong>Mensaje de Error: </strong> @Model.Mensaje
+            </div>
+        }
+    </div>
+}
