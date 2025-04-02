@@ -3,42 +3,124 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Snake</title>
+    <title>@ViewData["Title"] - Gestión de Inmuebles</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
+    <style>
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            margin: 6px 0;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .main-content h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1c40f;
+            display: inline-block;
+        }
+
+        .features-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+            .features-list li {
+                padding: 8px 0;
+                padding-left: 30px;
+                position: relative;
+            }
+
+                .features-list li:before {
+                    content: "✓";
+                    color: #27ae60;
+                    font-weight: bold;
+                    position: absolute;
+                    left: 0;
+                }
+
+        .nav-bg-custom {
+            background-color: #D6BD98 !important;
+        }
+
+        .btn-login {
+            background-color: #1A3636 !important;
+            color: white !important;
+        }
+
+        .btn-register {
+            background-color: #40534C !important;
+            color: white !important;
+        }
+
+        @@media (max-width: 768px) {
+            .hero-image {
+                height: 350px;
+            }
+
+            .hero-content {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color:#D6BD98">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm nav-bg-custom">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Snake</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Gestión Inmobiliaria</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @*  <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Properties/Index">Propiedades</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li> *@
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Contracts/Index">Contratos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Tenants/Index">Inquilinos</a>
+                        </li>
                     </ul>
                     <div class="d-flex align-items-center">
                         @if (Context.Session.GetString("UserSession") == null)
                         {
-                            <a class="navbar-brand btn  text-white" style="background-color:#1A3636" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
-                            <a class="navbar-brand btn  text-white" style="background-color:#40534C" asp-area="" asp-page="/Auth/Register">Registrarse</a>
+                            <a class="btn btn-login me-2" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
+                            <a class="btn btn-register" asp-area="" asp-page="/Auth/Register">Registrarse</a>
                         }
                         else
                         {
                             <img src="@Context.Session.GetString("UserPicture")" alt="User Picture" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;" />
-                            <span class="navbar-text" style="margin-right: 15px;">
+                            <span class="navbar-text me-3">
                                 @Context.Session.GetString("UserSession")
                             </span>
-                            <a class="navbar-brand btn btn-secondary text-white" asp-area="" asp-page="/Auth/Logoff">Cerrar sesión</a>
+                            <a class="btn btn-secondary" asp-area="" asp-page="/Auth/Logoff">Cerrar sesión</a>
                         }
                     </div>
                 </div>
@@ -50,7 +132,7 @@
     </main>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Snake
+            &copy; @DateTime.Now.Year - Gestión de Inmuebles
         </div>
     </footer>
 

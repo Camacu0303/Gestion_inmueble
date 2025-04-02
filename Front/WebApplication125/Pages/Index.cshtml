@@ -1,40 +1,75 @@
 ﻿@page
-@model WebApplication125.Pages.IndexModel
-
+@model IndexModel
 @{
-    if (HttpContext.Session.GetString("UserSession") != null)
-    {
-        Response.Redirect("../Game/LeaderBoards");
-    }
-    ViewData["Title"] = "Lista de productos";
+    ViewData["Title"] = "Inicio - Gestión de Inmuebles";
 }
-<div class="mt-0 mb-0" style="position: relative; width: 100%; margin: 6px 0;">
-    <img src="https://murciagrouprd.com/wp-content/uploads/2021/12/img-013-b24239ab.jpg"
-         alt="Culebra"
-         style="width: 100%; height: 350px; object-fit: cover;">
-    <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; background-color: rgba(128, 128, 128, 0.7); padding: 20px; border-radius: 10px;">
-        <h1 class="display-4">Snake</h1>
+
+<div class="hero-banner">
+    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+         alt="Edificio moderno"
+         class="hero-image">
+    <div class="hero-content">
+        <h1 class="display-4">Gestión de Inmuebles</h1>
         <p>
-            ¿Quieres jugar? ¡<a class="text-white" asp-area="" asp-page="/Auth/Register">Registrate</a> o <a class="text-white" asp-area="" asp-page="/Auth/Login">Inicia sesión</a> para empezar!
+            La solución completa para administrar tu patrimonio inmobiliario
         </p>
+        @if (HttpContext.Session.GetString("UserSession") == null)
+        {
+            <div class="mt-3">
+                <a class="btn btn-login btn-lg me-2" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
+                <a class="btn btn-register btn-lg" asp-area="" asp-page="/Auth/Register">Registrarse</a>
+            </div>
+        }
+        else
+        {
+            <div class="mt-3">
+                <a class="btn btn-primary btn-lg" asp-area="" asp-page="/Properties/Index">Ver Propiedades</a>
+            </div>
+        }
     </div>
 </div>
 
-<div class="container mt-4">
-    <h2>La Historia de Snake</h2>
-    <p>
-        En un mundo digital lleno de retos y obstáculos, existía una pequeña serpiente llamada Serpentina. Desde su nacimiento, Serpentina soñaba con recorrer un vasto y misterioso laberinto, donde las frutas deliciosas crecían en cada esquina. Sin embargo, había un problema: el laberinto estaba lleno de peligros, y la serpiente tenía que ser astuta y ágil para sobrevivir.
-    </p>
-    <p>
-        Un día, Serpentina decidió que era hora de aventurarse. Con valentía, se deslizó fuera de su refugio y se encontró en el laberinto. Su misión era clara: comer tantas frutas como pudiera para crecer y volverse más fuerte. Cada vez que devoraba una fruta, su cuerpo se alargaba, lo que le daba más energía y habilidades para sortear los obstáculos.
-    </p>
-    <p>
-        A medida que avanzaba, Serpentina se dio cuenta de que no estaba sola. Otras criaturas del laberinto la observaban, y algunas incluso intentaban detenerla. Pero Serpentina no se dejó intimidar. Usando su ingenio, se movía rápidamente, cambiando de dirección y esquivando a sus enemigos, mientras buscaba la siguiente fruta brillante.
-    </p>
-    <p>
-        Con cada fruta que comía, el laberinto se volvía más complicado, pero también más emocionante. Serpentina enfrentaba nuevos desafíos y aprendía a adaptarse a cada uno de ellos. Con el tiempo, se convirtió en la serpiente más rápida y astuta del laberinto, ganando el respeto de todos los demás habitantes digitales.
-    </p>
-    <p>
-        Así comenzó la leyenda de Serpentina, la serpiente que nunca se rindió y siempre buscó más frutas en su camino. Su aventura continúa en el juego "Snake", donde los jugadores pueden unirse a ella y vivir la emoción de devorar frutas, crecer y conquistar el laberinto. ¿Te atreves a acompañar a Serpentina en su viaje?
-    </p>
+<div class="container main-content mt-4">
+    <h2 class="text-center mb-4">Nuestro Compromiso con tu Patrimonio</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Control Total sobre tus Propiedades</h3>
+            <p>
+                En nuestro sistema de gestión de inmuebles, te ofrecemos las herramientas necesarias para administrar eficientemente tu cartera de propiedades. Desde el seguimiento de contratos hasta el mantenimiento programado, todo en un solo lugar.
+            </p>
+            <p>
+                Imagina poder acceder a toda la información de tus inmuebles desde cualquier dispositivo, en cualquier momento. Con nuestro sistema, esta posibilidad se hace realidad, brindándote tranquilidad y control sobre tus inversiones.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h3>Características Principales</h3>
+            <ul class="features-list">
+                <li>Registro detallado de cada propiedad</li>
+                <li>Gestión de contratos y arrendatarios</li>
+                <li>Seguimiento de pagos y facturas</li>
+                <li>Programación de mantenimientos</li>
+                <li>Reportes y análisis financieros</li>
+                <li>Acceso multiplataforma</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Transformando la Gestión Inmobiliaria</h3>
+            <p>
+                Nuestra plataforma fue diseñada pensando en las necesidades actuales del mercado inmobiliario. Sabemos que cada propiedad es única y requiere atención personalizada. Por eso, hemos creado un sistema flexible que se adapta a tus requerimientos específicos.
+            </p>
+            <p>
+                Desde pequeños propietarios hasta grandes empresas inmobiliarias, nuestro sistema escala contigo, ofreciendo soluciones a medida para cada etapa de tu crecimiento. La tecnología está de tu lado para simplificar procesos, reducir errores y maximizar el rendimiento de tus inversiones.
+            </p>
+            @if (HttpContext.Session.GetString("UserSession") == null)
+            {
+                <div class="text-center mt-4">
+                    <a class="btn btn-register btn-lg" asp-area="" asp-page="/Auth/Register">Comienza Ahora</a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
