@@ -1,4 +1,4 @@
-@API_WIN_MAIN_HostAddress = http://localhost:5283
+@API_WIN_MAIN_HostAddress = http://localhost:7094
 
 GET {{API_WIN_MAIN_HostAddress}}/weatherforecast/
 Accept: application/json
