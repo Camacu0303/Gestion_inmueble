@@ -35,7 +35,7 @@ namespace API_WIN_MAIN.Controllers
         [HttpPost]
         public async Task<ActionResult<TEntity>> Create(TEntity entity)
         {
-            _dbSet.Add(entity);
+                        _dbSet.Add(entity);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = GetEntityId(entity) }, entity);
         }

@@ -1,57 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
-using WEB.Models.PreProjectFiles;
-using WebApplication125.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-namespace WebApplication125.Pages.Auth
-{
+namespace WebApplication125.Pages.Auth { 
     public class LoginModel : PageModel
     {
-        public string Mensaje { get; set; } = string.Empty;
-        private readonly UsuarioService _Usuarioservice;
+        private readonly HttpClient _httpClient;
+
+        public LoginModel(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
+        }
 
         [BindProperty]
-        public LoginRequest LoginRequest { get; set; }= new LoginRequest();
+        public string Email { get; set; }
 
-        public LoginModel(UsuarioService Usuarioservice)
+        [BindProperty]
+        public string Contraseña { get; set; }
+
+        public void OnGet()
         {
-            _Usuarioservice = Usuarioservice;
-
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            try
+            if (!ModelState.IsValid)
+                return Page();
+
+            var loginData = new { Email, Contraseña };
+            var response = await _httpClient.PostAsJsonAsync("Auth/Login", loginData);
+
+            if (response.IsSuccessStatusCode)
             {
-                if (!ModelState.IsValid)
-                {
-                    Mensaje = "Datos Invalidos";
-                    return Page();
-                }
-
-                var response = await _Usuarioservice.LoginUsuarioAsync(LoginRequest);
-
-                if (response.IsSuccessStatusCode)
-                {        
-                    String content = await response.Content.ReadAsStringAsync();
-                    var userResponse = JsonSerializer.Deserialize<UserResponse>(content);            
-                    HttpContext.Session.SetInt32("UserIdSession", userResponse.id);
-                    HttpContext.Session.SetString("UserSession", userResponse.nombre);
-                    HttpContext.Session.SetString("UserPicture", userResponse.picture);
-                    return RedirectToPage("../Game/LeaderBoards");
-                }
-                else
-                {
-                    Mensaje = "Error en el agregado del usuario: " + response.ToString();
-                    return Page();
-                }
+                return RedirectToPage("/Index");
             }
-            catch (Exception ex)
+            else
             {
-                Mensaje = "Error " + ex.Message;
+                ModelState.AddModelError(string.Empty, "Credenciales incorrectas.");
                 return Page();
             }
         }
-
     }
 }

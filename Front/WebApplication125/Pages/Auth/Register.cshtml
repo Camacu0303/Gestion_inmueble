@@ -1,65 +1,39 @@
 ﻿@page
-@model WebApplication125.Pages.Auth.RegisterModel
+@model RegisterModel
 @{
+    ViewData["Title"] = "Registro";
+}
 
-   <div class="container">
-        <h2>Registro</h2>
-
+<div class="row">
+    <div class="col-md-4">
         <form method="post">
+            <h4>Crear nueva cuenta.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-            <div class="mb-3">
-                <label for="" class="form-label">Nombre de Usuario</label>
-                <input type="text"
-                       class="form-control"
-                       aria-describedby="helpId"
-                       placeholder="Ex: Yggdrasil03"
-                       asp-for="_UsuarioModels.username"
-                       required />
-                <small id="helpId" class="form-text text-muted">Help username</small>
-
-
+            <div class="form-group">
+                <label asp-for="NuevoUsuario.Nombre"></label>
+                <input asp-for="NuevoUsuario.Nombre" class="form-control" />
+                <span asp-validation-for="NuevoUsuario.Nombre" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label for="" class="form-label">Contraseña</label>
-                <input type="text"
-                       class="form-control"
-                       aria-describedby="helpId"
-                       placeholder="Ex: a#!!¨*312dDdc"
-                       asp-for="_UsuarioModels.contraseña"
-                       required />
-                <small id="helpId" class="form-text text-muted">Help contraseña</small>
-            </div>
-            <div class="mb-3">
-                <label for="" class="form-label">Foto</label>
-                <input type="text"
-                       class="form-control"
-                       aria-describedby="helpId"
-                       placeholder="Ex: C:/asd/asd/a.png"
-                       asp-for="_UsuarioModels.picture"
-                       required />
-                <small id="helpId" class="form-text text-muted">Help picture</small>
 
+            <div class="form-group">
+                <label asp-for="NuevoUsuario.Email"></label>
+                <input asp-for="NuevoUsuario.Email" class="form-control" />
+                <span asp-validation-for="NuevoUsuario.Email" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <button type="submit"
-                        class="btn btn-primary">
-                    Guardar
-                </button>
 
-
+            <div class="form-group">
+                <label asp-for="NuevoUsuario.Contraseña"></label>
+                <input asp-for="NuevoUsuario.Contraseña" type="password" class="form-control" />
+                <span asp-validation-for="NuevoUsuario.Contraseña" class="text-danger"></span>
             </div>
+
+            <button type="submit" class="btn btn-primary">Registrarse</button>
         </form>
-
-        @if (!string.IsNullOrEmpty(Model.Mensaje))
-        {
-            <div class="alert alert-danger alert-dismissible fade show"
-                 role="alert">
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-                <strong>Mensaje de Error: </strong> @Model.Mensaje
-            </div>
-        }
     </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -23,10 +23,6 @@ namespace API_WIN_MAIN.Models
         [StringLength(255)]
         public string Contraseña { get; set; }
 
-        [ForeignKey("Rol")]
-        public int id_Rol { get; set; }
-
-        public Rol Rol { get; set; }
     }
 }
 
