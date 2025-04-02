@@ -1,0 +1,6 @@
+﻿@page
+@model WebApplication125.Pages.Auth.LogoffModel
+@{
+    HttpContext.Session.Clear();
+    Response.Redirect("../Index");
+}

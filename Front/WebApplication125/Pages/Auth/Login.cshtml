@@ -1,0 +1,49 @@
+﻿@page
+@model WebApplication125.Pages.Auth.LoginModel
+@{
+
+   <div class="container">
+        <h2>Inicio de sesión</h2>
+
+        <form method="post">
+
+            <div class="mb-3">
+                <label for="" class="form-label">Nombre de Usuario</label>
+                <input type="text"
+                       class="form-control"
+                       aria-describedby="helpId"
+                       placeholder="Ex: Yggdrasil03"
+                       asp-for="LoginRequest.username"
+                       required />
+                <small id="helpId" class="form-text text-muted">Help username</small>
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">Contraseña</label>
+                <input type="text"
+                       class="form-control"
+                       aria-describedby="helpId"
+                       placeholder="Ex: a#!!¨*312dDdc"
+                       asp-for="LoginRequest.password"
+                       required />
+                <small id="helpId" class="form-text text-muted">Help contraseña</small>
+            </div>
+            <div class="mb-3">
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar
+                </button>
+            </div>
+        </form>
+        @if (!string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                <strong>Mensaje de Error: </strong> @Model.Mensaje
+            </div>
+        }
+    </div>
+}
