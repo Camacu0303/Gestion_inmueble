@@ -1,0 +1,42 @@
+﻿@page "{id:int}"
+@model WEB.Pages.Contratos.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Contrato";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow">
+        <div class="card-header bg-danger text-white">
+            <h3><i class="fas fa-trash-alt me-2"></i>@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="text-danger mb-4">¿Está seguro de eliminar este contrato?</h5>
+
+            <dl class="row">
+                <dt class="col-sm-3">Propiedad:</dt>
+                <dd class="col-sm-9">@Model.Contrato.Propiedad?.Nombre</dd>
+
+                <dt class="col-sm-3">Cliente:</dt>
+                <dd class="col-sm-9">@Model.Contrato.Cliente?.Nombre</dd>
+
+                <dt class="col-sm-3">Monto:</dt>
+                <dd class="col-sm-9">@Model.Contrato.Monto.ToString("C")</dd>
+
+                <dt class="col-sm-3">Vigencia:</dt>
+                <dd class="col-sm-9">@Model.Contrato.Fecha.ToString("dd/MM/yyyy") - @Model.Contrato.Fecha.AddMonths(Model.Contrato.Duracion).ToString("dd/MM/yyyy")</dd>
+            </dl>
+
+            <form method="post">
+                <input type="hidden" asp-for="Contrato.id_Contrato" />
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-1"></i> Confirmar Eliminación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
