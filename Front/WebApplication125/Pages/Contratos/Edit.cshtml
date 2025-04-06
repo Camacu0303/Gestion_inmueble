@@ -1,75 +1,65 @@
-﻿@page "{id:int}"
+﻿@page
 @model WEB.Pages.Contratos.EditModel
 @{
     ViewData["Title"] = "Editar Contrato";
 }
 
 <div class="container mt-4">
-    <div class="card shadow border-warning">
-        <div class="card-header bg-warning text-white">
-            <h3><i class="fas fa-edit me-2"></i>@ViewData["Title"]</h3>
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="fas fa-file-signature me-2"></i>@ViewData["Title"]</h3>
         </div>
         <div class="card-body">
-            @if (Model.ApiError != null)
-            {
-                <div class="alert alert-danger">@Model.ApiError</div>
-            }
-
             <form method="post">
-                <input type="hidden" asp-for="Contrato.id_Contrato" />
-
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Propiedad</label>
-                        <select asp-for="Contrato.id_Propiedad" asp-items="Model.Propiedades" class="form-select" required>
+                        <label asp-for="Contrato.IdPropiedad" class="form-label">Propiedad</label>
+                        <select asp-for="Contrato.IdPropiedad" asp-items="Model.Propiedades" class="form-select" required>
                             <option value="">Seleccionar propiedad...</option>
                         </select>
-                        <span asp-validation-for="Contrato.id_Propiedad" class="text-danger"></span>
+                        <span asp-validation-for="Contrato.IdPropiedad" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Cliente</label>
-                        <select asp-for="Contrato.id_Cliente" asp-items="Model.Clientes" class="form-select" required>
+                        <label asp-for="Contrato.IdCliente" class="form-label">Cliente</label>
+                        <select asp-for="Contrato.IdCliente" asp-items="Model.Clientes" class="form-select" required>
                             <option value="">Seleccionar cliente...</option>
                         </select>
-                        <span asp-validation-for="Contrato.id_Cliente" class="text-danger"></span>
+                        <span asp-validation-for="Contrato.IdCliente" class="text-danger"></span>
                     </div>
                 </div>
 
+                
+
                 <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="Contrato.Fecha" class="form-label"></label>
-                        <input asp-for="Contrato.Fecha" class="form-control" type="date" required />
-                        <span asp-validation-for="Contrato.Fecha" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="Contrato.Monto" class="form-label"></label>
+                    <div class="col-md-6">
+                        <label asp-for="Contrato.Monto" class="form-label">Monto</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input asp-for="Contrato.Monto" class="form-control" type="number" step="0.01" required />
+                            <input asp-for="Contrato.Monto" class="form-control" type="number" step="0.01" min="0.01" required />
                         </div>
                         <span asp-validation-for="Contrato.Monto" class="text-danger"></span>
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="Contrato.Duracion" class="form-label">Duración (meses)</label>
-                        <input asp-for="Contrato.Duracion" class="form-control" type="number" min="1" required />
-                        <span asp-validation-for="Contrato.Duracion" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label asp-for="Contrato.IdEstado" class="form-label">Estado</label>
+                        <select asp-for="Contrato.IdEstado" asp-items="Model.EstadosContrato" class="form-select" required>
+                            <option value="">Seleccionar estado...</option>
+                        </select>
+                        <span asp-validation-for="Contrato.IdEstado" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Estado del Contrato</label>
-                    <select asp-for="Contrato.id_Estado" asp-items="Model.EstadosContrato" class="form-select" required>
-                        <option value="">Seleccionar estado...</option>
-                    </select>
-                    <span asp-validation-for="Contrato.id_Estado" class="text-danger"></span>
+                    <label asp-for="Contrato.Mensaje" class="form-label">Observaciones</label>
+                    <textarea asp-for="Contrato.Mensaje" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Contrato.Mensaje" class="text-danger"></span>
                 </div>
 
-                <div class="d-flex justify-content-between mt-4">
+                <div class="d-flex justify-content-between">
                     <a asp-page="Index" class="btn btn-secondary">
                         <i class="fas fa-times me-1"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-warning text-white">
-                        <i class="fas fa-save me-1"></i> Guardar Cambios
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Guardar Contrato
                     </button>
                 </div>
             </form>
@@ -80,13 +70,15 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Inicializar datepicker con formato
-        $(document).ready(function(){
-            $('#Contrato_Fecha').attr('type', 'date');
+        document.addEventListener('DOMContentLoaded', function() {
+            const fechaInicio = document.querySelector('input[asp-for="Contrato.FechaInicio"]');
+            const fechaFin = document.querySelector('input[asp-for="Contrato.FechaFin"]');
 
-            // Opcional: Cargar datos relacionados al cambiar selección
-            $('select').change(function(){
-                // Lógica para actualizar campos dependientes
+            fechaFin.addEventListener('change', function() {
+                if (new Date(fechaInicio.value) > new Date(fechaFin.value)) {
+                    alert('La fecha fin debe ser posterior a la fecha de inicio');
+                    fechaFin.value = '';
+                }
             });
         });
     </script>

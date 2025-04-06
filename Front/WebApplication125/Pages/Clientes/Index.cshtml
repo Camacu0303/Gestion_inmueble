@@ -18,13 +18,7 @@
         <div class="alert alert-success">@TempData["SuccessMessage"]</div>
     }
 
-    <!-- Mensaje de error -->
-    @if (Model.ApiError != null)
-    {
-        <div class="alert alert-danger">@Model.ApiError</div>
-    }
-
-    <div class="card shadow-sm">
+      <div class="card shadow-sm">
         <div class="card-body">
             @if (Model.Clientes == null || !Model.Clientes.Any())
             {

@@ -21,7 +21,7 @@ namespace WEB.Pages.Clientes
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
-                var response = await client.GetAsync("clientes");
+                var response = await client.GetAsync("Cliente");
 
                 if (response.IsSuccessStatusCode)
                 {

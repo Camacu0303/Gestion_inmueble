@@ -1,48 +1,50 @@
+using System.ComponentModel.DataAnnotations;
 using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WEB.Pages.Propiedades;
 
 namespace WEB.Pages.Contratos
 {
     public class EditModel : PageModel
     {
         private readonly IHttpClientFactory _httpClient;
+        private readonly ILogger<EditModel> _logger;
 
-        public EditModel(IHttpClientFactory httpClient)
+        public EditModel(IHttpClientFactory httpClient, ILogger<EditModel> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         [BindProperty]
-        public Contrato Contrato { get; set; } = new Contrato();
+        public ContratoUpdateDto Contrato { get; set; }
 
         public SelectList Propiedades { get; set; }
         public SelectList Clientes { get; set; }
         public SelectList EstadosContrato { get; set; }
-        public string? ApiError { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            await CargarDropdowns();
+
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
+                Contrato = await client.GetFromJsonAsync<ContratoUpdateDto>($"Contrato/{id}");
 
-                // Cargar contrato existente
-                var contratoResponse = await client.GetFromJsonAsync<Contrato>($"contratos/{id}");
-                if (contratoResponse == null)
+                if (Contrato == null)
                 {
                     return NotFound();
                 }
-                Contrato = contratoResponse;
 
-                await CargarDropdowns();
                 return Page();
             }
             catch (Exception ex)
             {
-                ApiError = $"Error al cargar datos: {ex.Message}";
-                return Page();
+                _logger.LogError(ex, $"Error al cargar contrato ID: {id}");
+                return RedirectToPage("./Index");
             }
         }
 
@@ -57,37 +59,82 @@ namespace WEB.Pages.Contratos
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
-                var response = await client.PutAsJsonAsync($"contratos/{Contrato.id_Contrato}", Contrato);
+                var response = await client.PutAsJsonAsync($"Contrato/{Contrato.Id}", Contrato);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToPage("./Index", new { successMessage = "Contrato actualizado correctamente" });
+                    TempData["SuccessMessage"] = "Contrato actualizado correctamente";
+                    return RedirectToPage("./Index");
                 }
 
-                ApiError = await response.Content.ReadAsStringAsync();
-                await CargarDropdowns();
-                return Page();
+                var error = await response.Content.ReadAsStringAsync();
+                _logger.LogError($"Error al actualizar contrato: {error}");
+                ModelState.AddModelError(string.Empty, "Error al actualizar el contrato");
             }
             catch (Exception ex)
             {
-                ApiError = $"Error al guardar: {ex.Message}";
-                await CargarDropdowns();
-                return Page();
+                _logger.LogError(ex, "Error al actualizar contrato");
+                ModelState.AddModelError(string.Empty, "Error interno al actualizar el contrato");
             }
+
+            await CargarDropdowns();
+            return Page();
         }
 
         private async Task CargarDropdowns()
         {
-            var client = _httpClient.CreateClient("ApiClient");
+            try
+            {
+                var client = _httpClient.CreateClient("ApiClient");
 
-            var propiedades = await client.GetFromJsonAsync<List<Propiedad>>("propiedades?estado=activo");
-            Propiedades = new SelectList(propiedades ?? new(), "id_Propiedad", "Nombre", Contrato.id_Propiedad);
+                var propiedadesTask = client.GetFromJsonAsync<List<PropiedadDto>>("Propiedades");
+                var clientesTask = client.GetFromJsonAsync<List<ClienteDto>>("Cliente");
+                var estadosTask = client.GetFromJsonAsync<List<EstadoContratoDto>>("EstadoContrato");
 
-            var clientes = await client.GetFromJsonAsync<List<Cliente>>("clientes?estado=activo");
-            Clientes = new SelectList(clientes ?? new(), "id_Cliente", "Nombre", Contrato.id_Cliente);
+                await Task.WhenAll(propiedadesTask, clientesTask, estadosTask);
 
-            var estados = await client.GetFromJsonAsync<List<EstadoContrato>>("estadoscontrato");
-            EstadosContrato = new SelectList(estados ?? new(), "id_Estado", "Nombre", Contrato.id_Estado);
+                Propiedades = new SelectList(propiedadesTask.Result ?? new(), "Id", "Nombre");
+                Clientes = new SelectList(clientesTask.Result ?? new(), "Id", "Nombre");
+                EstadosContrato = new SelectList(estadosTask.Result ?? new(), "Id", "Nombre");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cargar dropdowns");
+            }
+        }
+        public class EstadoContratoDto
+        {
+            public int Id { get; set; }
+            public string Nombre { get; set; }
+        }
+        public class ClienteDto
+        {
+            public int Id { get; set; }
+            public string Nombre { get; set; }
+            public string Email { get; set; }
+            public string Telefono { get; set; }
+        }
+        public class ContratoUpdateDto
+        {
+            public int Id { get; set; }
+
+            [Required]
+            public int IdPropiedad { get; set; }
+
+            [Required]
+            public int IdCliente { get; set; }
+            public string Mensaje { get; set; }
+
+            [Required]
+            public DateTime Fecha { get; set; }
+                        
+            [Required]
+            [Range(0.01, double.MaxValue)]
+            public decimal Monto { get; set; }
+
+            [Required]
+            public int IdEstado { get; set; }
         }
     }
 }

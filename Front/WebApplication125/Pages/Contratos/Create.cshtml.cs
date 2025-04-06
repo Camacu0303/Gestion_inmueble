@@ -1,64 +1,126 @@
-using API_WIN_MAIN.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace WEB.Pages.Contratos
 {
+   
     public class CreateModel : PageModel
+{
+    private readonly IHttpClientFactory _httpClient;
+    private readonly ILogger<CreateModel> _logger;
+
+    public CreateModel(IHttpClientFactory httpClient, ILogger<CreateModel> logger)
     {
-        private readonly IHttpClientFactory _httpClient;
+        _httpClient = httpClient;
+        _logger = logger;
+    }
 
-        public CreateModel(IHttpClientFactory httpClient)
-        {
-            _httpClient = httpClient;
-        }
+    [BindProperty]
+    public ContratoCreateDto Contrato { get; set; }
 
-        [BindProperty]
-        public Contrato Contrato { get; set; } = new Contrato();
+    public SelectList Propiedades { get; set; }
+    public SelectList Clientes { get; set; }
+    public SelectList EstadosContrato { get; set; }
 
-        public SelectList Propiedades { get; set; }
-        public SelectList Clientes { get; set; }
-        public SelectList EstadosContrato { get; set; }
+    public async Task OnGetAsync()
+    {
+        await CargarDropdowns();
+    }
 
-        public async Task OnGetAsync()
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
         {
             await CargarDropdowns();
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        try
         {
-            if (!ModelState.IsValid)
-            {
-                await CargarDropdowns();
-                return Page();
-            }
-
             var client = _httpClient.CreateClient("ApiClient");
             var response = await client.PostAsJsonAsync("Contrato", Contrato);
 
             if (response.IsSuccessStatusCode)
             {
+                TempData["SuccessMessage"] = "Contrato creado correctamente";
                 return RedirectToPage("./Index");
             }
 
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-            await CargarDropdowns();
-            return Page();
+            var error = await response.Content.ReadAsStringAsync();
+            _logger.LogError($"Error al crear contrato: {error}");
+            ModelState.AddModelError(string.Empty, "Error al crear el contrato");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al crear contrato");
+            ModelState.AddModelError(string.Empty, "Error interno al crear el contrato");
         }
 
-        private async Task CargarDropdowns()
+        await CargarDropdowns();
+        return Page();
+    }
+
+    private async Task CargarDropdowns()
+    {
+        try
         {
             var client = _httpClient.CreateClient("ApiClient");
 
-            var propiedades = await client.GetFromJsonAsync<List<Propiedad>>("propiedades");
-            Propiedades = new SelectList(propiedades ?? new(), "id_Propiedad", "Nombre");
+            var propiedadesTask = client.GetFromJsonAsync<List<PropiedadDto>>("Propiedades");
+            var clientesTask = client.GetFromJsonAsync<List<ClienteDto>>("Cliente");
+            var estadosTask = client.GetFromJsonAsync<List<EstadoContratoDto>>("EstadoContrato");
 
-            var clientes = await client.GetFromJsonAsync<List<Cliente>>("clientes");
-            Clientes = new SelectList(clientes ?? new(), "id_Cliente", "Nombre");
+            await Task.WhenAll(propiedadesTask, clientesTask, estadosTask);
 
-            var estados = await client.GetFromJsonAsync<List<EstadoContrato>>("estadoscontrato");
-            EstadosContrato = new SelectList(estados ?? new(), "id_Estado", "Nombre");
+            Propiedades = new SelectList(propiedadesTask.Result ?? new(), "Id", "Nombre");
+            Clientes = new SelectList(clientesTask.Result ?? new(), "Id", "Nombre");
+            EstadosContrato = new SelectList(estadosTask.Result ?? new(), "Id", "Nombre");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al cargar dropdowns");
         }
     }
+
+    public class ContratoCreateDto
+    {
+        [Required(ErrorMessage = "La propiedad es requerida")]
+        public int IdPropiedad { get; set; }
+
+        [Required(ErrorMessage = "El cliente es requerido")]
+        public int IdCliente { get; set; }
+
+        [Required(ErrorMessage = "La fecha es requerida")]
+        public DateTime Fecha { get; set; } = DateTime.Today;
+
+        [Required(ErrorMessage = "El monto es requerido")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
+        public decimal Monto { get; set; }
+
+        [Required(ErrorMessage = "El estado es requerido")]
+        public int IdEstado { get; set; }
+    }
+
+    public class EstadoContratoDto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
+
+    public class ClienteDto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public string Email { get; set; }
+        public string Telefono { get; set; }
+    }
+
+    public class PropiedadDto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
+}
 }
