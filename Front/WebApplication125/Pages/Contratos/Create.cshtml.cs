@@ -40,7 +40,7 @@ namespace WEB.Pages.Contratos
         try
         {
             var client = _httpClient.CreateClient("ApiClient");
-            var response = await client.PostAsJsonAsync("Contrato", Contrato);
+            var response = await client.PostAsJsonAsync("Contratos", Contrato);
 
             if (response.IsSuccessStatusCode)
             {
@@ -75,8 +75,8 @@ namespace WEB.Pages.Contratos
             await Task.WhenAll(propiedadesTask, clientesTask, estadosTask);
 
             Propiedades = new SelectList(propiedadesTask.Result ?? new(), "Id", "Nombre");
-            Clientes = new SelectList(clientesTask.Result ?? new(), "Id", "Nombre");
-            EstadosContrato = new SelectList(estadosTask.Result ?? new(), "Id", "Nombre");
+            Clientes = new SelectList(clientesTask.Result ?? new(), "id_cliente", "Nombre");
+            EstadosContrato = new SelectList(estadosTask.Result ?? new(), "id_estado", "Nombre");
         }
         catch (Exception ex)
         {
@@ -105,13 +105,13 @@ namespace WEB.Pages.Contratos
 
     public class EstadoContratoDto
     {
-        public int Id { get; set; }
+        public int id_estado { get; set; }
         public string Nombre { get; set; }
     }
 
     public class ClienteDto
     {
-        public int Id { get; set; }
+        public int id_cliente { get; set; }
         public string Nombre { get; set; }
         public string Email { get; set; }
         public string Telefono { get; set; }
