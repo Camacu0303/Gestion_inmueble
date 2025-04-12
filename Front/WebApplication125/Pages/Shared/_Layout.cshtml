@@ -7,34 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-        .hero-banner {
-            position: relative;
-            width: 100%;
-            margin: 6px 0;
-        }
-
-        .hero-image {
-            width: 100%;
-            height: 450px;
-            object-fit: cover;
-            filter: brightness(0.8);
-        }
-
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 800px;
-            width: 90%;
-        }
-
         .main-content h2 {
             color: #2c3e50;
             font-weight: 700;
@@ -63,7 +37,7 @@
                 }
 
         .nav-bg-custom {
-            background-color: #D6BD98 !important;
+            background-color: #White !important;
         }
 
         .btn-login {
@@ -91,7 +65,9 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm nav-bg-custom">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Gestión Inmobiliaria</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <img src="~/images/Brand.png" alt="Gestión Inmobiliaria" style="height:auto; width: 300px;">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -130,11 +106,53 @@
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-light mt-5 pt-4 pb-4">
         <div class="container">
-            &copy; @DateTime.Now.Year - Gestión de Inmuebles
+            <div class="row">
+                <!-- Columna 1: Empresa -->
+                <div class="col-md-3 mb-3">
+                    <h5>HomeSpace</h5>
+                    <p>Especialistas en la compra, venta y alquiler de propiedades. Te ayudamos a encontrar el hogar ideal.</p>
+                </div>
+
+                <!-- Columna 2: Enlaces rápidos -->
+                <div class="col-md-3 mb-3">
+                    <h6>Enlaces Rápidos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Propiedades</a></li>
+                        <li><a href="#">Agentes</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Información Legal -->
+                <div class="col-md-3 mb-3">
+                    <h6>Legal</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Aviso Legal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Contacto -->
+                <div class="col-md-3 mb-3">
+                    <h6>Contacto</h6>
+                    <ul class="list-unstyled">
+                        <li>📍 Dirección: Calle Ficticia 123, Ciudad</li>
+                        <li>📞 Teléfono: (123) 456-7890</li>
+                        <li>✉️ Email: contacto@homespace.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center pt-3 border-top mt-4">
+                &copy; @DateTime.Now.Year - HomeSpace. Todos los derechos reservados.
+            </div>
         </div>
     </footer>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
