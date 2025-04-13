@@ -11,7 +11,6 @@ builder.Services.AddHttpClient("ApiClient", client =>
 });
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
-builder.Services.AddHttpClient<UsuarioService>();
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
 app.UseSession();

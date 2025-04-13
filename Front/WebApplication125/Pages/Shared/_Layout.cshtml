@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WEB.Util
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -80,23 +81,45 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Contratos/Index">Contratos</a>
                         </li>
-                                                <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Clientes/Index">Clientes</a>
                         </li>
                     </ul>
+                    @{
+                        var usuario = SessionUtil.GetUser(Context);
+
+                    }
                     <div class="d-flex align-items-center">
-                        @if (Context.Session.GetString("UserSession") == null)
+                        @if (usuario==null)
                         {
-                            <a class="btn btn-login me-2" asp-area="" asp-page="/Auth/Login">Iniciar Sesión</a>
-                            <a class="btn btn-register" asp-area="" asp-page="/Auth/Register">Registrarse</a>
+                            <a class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center me-2"
+                               style="width: 40px; height: 40px;"
+                               asp-area="" asp-page="/Auth/Login"
+                               title="Iniciar sesión">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </a>
                         }
                         else
                         {
-                            <img src="@Context.Session.GetString("UserPicture")" alt="User Picture" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;" />
-                            <span class="navbar-text me-3">
-                                @Context.Session.GetString("UserSession")
-                            </span>
-                            <a class="btn btn-secondary" asp-area="" asp-page="/Auth/Logoff">Cerrar sesión</a>
+                            <div class="dropdown">
+                                <a class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center dropdown-toggle"
+                                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                   style="width: 40px; height: 40px;"
+                                   title="Menú de usuario">
+                                    <i class="fas fa-user"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li class="dropdown-item-text">
+                                        <strong>@usuario.Nombre</strong>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-area="" asp-page="/Auth/Logoff">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         }
                     </div>
                 </div>
