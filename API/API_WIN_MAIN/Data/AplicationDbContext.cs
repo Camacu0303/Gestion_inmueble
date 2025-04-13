@@ -12,23 +12,7 @@ namespace API_WIN_MAIN
         {
 
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Contrato>(entity =>
-            {
-                entity.HasOne(c => c.Propiedad)
-                    .WithMany(p => p.Contratos)
-                    .HasForeignKey(c => c.id_Propiedad);
-
-                entity.HasOne(c => c.Cliente)
-                    .WithMany()
-                    .HasForeignKey(c => c.id_Cliente);
-
-                entity.HasOne(c => c.EstadoContrato)
-                    .WithMany()
-                    .HasForeignKey(c => c.id_Estado);
-            });
-        }
+        
 
         //Necesitamos que van hacer los set y gets.
         //La definicion de entidades y modelos

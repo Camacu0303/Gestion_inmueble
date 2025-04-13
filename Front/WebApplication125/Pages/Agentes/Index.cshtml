@@ -1,0 +1,80 @@
+﻿@page
+@model WEB.Pages.Agentes.IndexModel
+@{
+    ViewData["Title"] = "Agente";
+
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-users me-2"></i>@ViewData["Title"]</h2>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Nuevo Agente
+        </a>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+            @if (Model.Agentes == null || !Model.Agentes.Any())
+            {
+                <div class="alert alert-warning">No hay agentes registrados</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID del Agente</th>
+                                <th>Teléfono</th>
+                                <th>Experiencia</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach (var item in Model.Agentes)
+                                {
+                                    <tr>
+                                        <td>@item.id_Agente</td>
+                                        <td>@item.Telefono</td>
+                                        <td>@item.Experiencia</td>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm">
+                                                <a asp-page="./Edit" asp-route-id="@item." class="btn btn-outline-primary" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-page="./Details" asp-route-id="@item.id_Agente" class="btn btn-outline-info" title="Detalles">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a asp-page="./Delete" asp-route-id="@item.id_Agente" class="btn btn-outline-danger" title="Eliminar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'opacity 1s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 1000);
+            });
+        }, 5000);
+    </script>
+}
+}

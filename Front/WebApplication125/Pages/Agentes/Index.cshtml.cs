@@ -1,14 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WEB.DTOs.AgenteDto;
 using WEB.Models;
+using WEB.Pages.Agentes;
 
-namespace WEB.Pages.Contratos
+namespace WEB.Pages.Agentes
 {
-    public class IndexModel : PageModel
+     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClient;
         private readonly ILogger<IndexModel> _logger;
+        private readonly IConfiguration _config;
 
         public IndexModel(IHttpClientFactory httpClient, ILogger<IndexModel> logger)
         {
@@ -16,31 +20,43 @@ namespace WEB.Pages.Contratos
             _logger = logger;
         }
 
-        public List<ContratoDto> Contratos { get; set; } = new List<ContratoDto>();
+        public List<AgenteDto> Agentes { get; set; } = new List<AgenteDto>();
 
         public async Task OnGetAsync()
         {
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
-                Contratos = await client.GetFromJsonAsync<List<ContratoDto>>("Contratos") ?? new List<ContratoDto>();
+                Agentes = await client.GetFromJsonAsync<List<AgenteDto>>("Agente") ?? new List<AgenteDto>();
+
+                Agentes = Agentes.Select(a => new AgenteDto
+                {
+                    id_Agente = a.id_Agente,
+                    id_Usuario = a.id_Usuario,
+                    Telefono = a.Telefono,
+                    Experiencia = a.Experiencia
+                }).ToList();
+
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al cargar contratos");
+                _logger.LogError(ex, "Error al cargar agentes");
             }
         }
+
+
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
-                var response = await client.DeleteAsync($"Contratos/{id}");
+                var response = await client.DeleteAsync($"Agente/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Contrato eliminado correctamente";
+                    TempData["SuccessMessage"] = "Agente eliminado correctamente";
                 }
                 else
                 {
@@ -55,17 +71,6 @@ namespace WEB.Pages.Contratos
 
             return RedirectToPage();
         }
-    }
-    public class ContratoDto
-    {
-        public int Id { get; set; }
-        public string PropiedadNombre { get; set; }
-        public string ClienteNombre { get; set; }
-        public string Tipo { get; set; }
-        public DateTime FechaInicio { get; set; }
-        public DateTime FechaFin { get; set; }
-        public decimal Monto { get; set; }
-        public string EstadoNombre { get; set; }
-    }
+    }      
 }
 
