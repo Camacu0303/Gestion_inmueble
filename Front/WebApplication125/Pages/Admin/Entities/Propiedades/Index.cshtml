@@ -1,0 +1,296 @@
+﻿@page
+@model WEB.Pages.Admin.Entities.Propiedades.IndexModel
+@{
+    ViewData["Title"] = "Propiedad";
+    <div class="container mt-4">
+        <!-- Mensaje de éxito -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        <!-- Botón para abrir el modal -->
+        <div>
+            <h1><i class="fas fa-user-tie icon"></i>Propiedades</h1>
+        </div>
+        <div>
+            <button class="btn mb-4" data-bs-toggle="modal" data-bs-target="#chartsModal">
+                <i class="fas fa-chart-bar me-1"></i> Ver Gráficos
+            </button>
+            <button class="btn mb-4" asp-page="./Edit">
+                <a class="text-white text-decoration-none" asp-page="./Create">
+                    <i class="fas fa-plus"></i> Agregar
+                    @ViewData["Title"]
+                </a>
+            </button>
+        </div>
+
+        <!-- Modal de gráficos -->
+        <div class="modal fade" id="chartsModal" tabindex="-1" aria-labelledby="chartsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg custom-modal-size">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chartsModalLabel">Estadísticas de Clientes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Adjust the row inside modal body -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                            <div class="col-md-4">
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                            <div class="col-md-4">
+                                <canvas id="lineChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @if (Model.Propiedades == null || !Model.Propiedades.Any())
+                {
+                    <div class="alert alert-warning">No hay Propiedades registradas</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table id="propiedadesTable" class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID del propiedad</th>
+                                    <th>Detalle</th>
+                                    <th>Dirección</th>
+                                    <th>Precio</th>
+                                    <th>Tipo de propiedad</th>
+                                    <th>Estado</th>
+                                    <th>Arrendador</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Propiedades)
+                                {
+                                    <tr>
+                                        <td>@item.id_propiedad</td>
+                                        <td>@item.nombre</td>
+                                        <td>@item.direccion</td>
+                                        <td>@item.precio</td>
+                                        <td>@item.TipoPropiedad.Nombre</td>
+                                        <td>@item.EstadoPropiedad.Nombre</td>
+                                        <td>@item.Usuario.Email</td>
+                                        <td class="text-end">
+                                            <div class="d-flex gap-2">
+                                                <a asp-page="./Edit" asp-route-id="@item.id_propiedad" class="btn btn-primary btn-sm"
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                                        data-id="@item.id_propiedad" title="Eliminar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Deseas eliminar el cliente seleccionado?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="confirmDeleteBtn" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Custom style for larger modal */
+        .custom-modal-size {
+            max-width: 90%;
+            /* Adjust to your desired size */
+        }
+    </style>
+}
+
+
+@section Scripts {
+    <script>
+         let deleteId = null;
+         let deleteEndpoint = 'Cliente';
+
+         $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+             const button = $(event.relatedTarget);
+             deleteId = button.data('id');
+         });
+
+        $('#confirmDeleteBtn').on('click', function () {
+             if (!deleteId || !deleteEndpoint) return;
+
+             const url = `https://localhost:7094/api/${deleteEndpoint}/${deleteId}`;
+
+             fetch(url, {
+                 method: 'DELETE'
+             })
+                     .then(response => {
+                         if (response.ok) {
+                             // Cierra el modal y recarga la página
+                             $('#confirmDeleteModal').modal('hide');
+                             location.reload();
+                         } else {
+                             return response.text().then(msg => { throw new Error(msg); });
+                         }
+                     })
+                     .catch(error => {
+                         alert('Error al eliminar: ' + error.message);
+                     });
+         });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+                var table = new DataTable('#propiedadesTable', {
+                paging: true,
+                ordering: true,
+                searching: true,
+                lengthMenu: [5, 10, 15, 20],
+                language: {
+                    search: "Filtrar clientes: ",
+                    lengthMenu: "Mostrar _MENU_ ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ",
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
+                    }
+                },
+                scrollY: '400px',
+                scrollCollapse: true,
+                jQueryUI: true
+            });
+
+        var clientes = @Html.Raw(Json.Serialize(Model.Propiedades));
+        var presupuestos = clientes.map(c => c.presupuesto);
+
+        var barChart, pieChart, lineChart;
+
+        $('#chartsModal').on('shown.bs.modal', function () {
+    if (barChart) barChart.destroy();
+    if (pieChart) pieChart.destroy();
+    if (lineChart) lineChart.destroy();
+
+    var propiedades = @Html.Raw(Json.Serialize(Model.Propiedades));
+
+    // --- Bar Chart: Rangos de precio ---
+    var precios = propiedades.map(p => p.precio);
+
+    var barChartCtx = document.getElementById('barChart').getContext('2d');
+    barChart = new Chart(barChartCtx, {
+        type: 'bar',
+        data: {
+            labels: ['0-50K', '50K-100K', '100K-200K', '200K+'],
+            datasets: [{
+                label: 'Propiedades por rango de precio',
+                data: [
+                    precios.filter(p => p <= 50000).length,
+                    precios.filter(p => p > 50000 && p <= 100000).length,
+                    precios.filter(p => p > 100000 && p <= 200000).length,
+                    precios.filter(p => p > 200000).length
+                ],
+                backgroundColor: '#4e73df'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { beginAtZero: true },
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // --- Pie Chart: Tipos de propiedad ---
+    var tipos = {};
+    propiedades.forEach(p => {
+        var tipo = p.tipoPropiedad?.nombre ?? 'Desconocido';
+        tipos[tipo] = (tipos[tipo] || 0) + 1;
+    });
+
+    var pieChartCtx = document.getElementById('pieChart').getContext('2d');
+    pieChart = new Chart(pieChartCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(tipos),
+            datasets: [{
+                label: 'Distribución por tipo',
+                data: Object.values(tipos),
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+            }]
+        }
+    });
+
+    // --- Line Chart: Propiedades por arrendador ---
+    var arrendadores = {};
+    propiedades.forEach(p => {
+        var user = p.usuario?.email ?? 'Desconocido';
+        arrendadores[user] = (arrendadores[user] || 0) + 1;
+    });
+
+    var lineChartCtx = document.getElementById('lineChart').getContext('2d');
+    lineChart = new Chart(lineChartCtx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(arrendadores),
+            datasets: [{
+                label: 'Propiedades por arrendador',
+                data: Object.values(arrendadores),
+                fill: false,
+                borderColor: '#4e73df',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: { display: true, text: 'Arrendador' },
+                    ticks: {
+                        callback: function (val, index) {
+                            const label = this.getLabelForValue(val);
+                            return label.length > 10 ? label.substring(0, 10) + '…' : label;
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Cantidad' }
+                }
+            }
+        }
+    });
+});
+
+        });
+    </script>
+
+}

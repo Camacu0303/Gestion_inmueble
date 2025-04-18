@@ -18,6 +18,89 @@ Response.Redirect("../Index");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real Estate Agency Entities</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+   <div class="container">
+        <table id="entityTable" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Entidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fas fa-user-tie icon"></i><a asp-page="Entities/Agentes/Index">Agente</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-star icon"></i><a asp-page="Entities/Calificaciones/Index">Calificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-users icon"></i><a asp-page="Entities/Clientes/Index">Cliente</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-comment icon"></i><a asp-page="Index">Comentario</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-file-signature icon"></i><a asp-page="Index">Contrato</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-check-circle icon"></i><a asp-page="Index">EstadoContrato</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">EstadoNotificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-credit-card icon"></i><a asp-page="Index">EstadoPago</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-home icon"></i><a asp-page="Index">EstadoPropiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">Notificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-money-bill-wave icon"></i><a asp-page="Index">Pago</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-building icon"></i><a asp-page="Entities/Propiedades/Index">Propiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-id-badge icon"></i><a asp-page="Index">Rol</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-cogs icon"></i><a asp-page="Index">TipoPropiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-user icon"></i><a asp-page="Index">Usuario</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-calendar-check icon"></i><a asp-page="Index">Visita</a></td>
+                </tr>
+            </tbody>
+        </table>
+   </div>
+
+    <script>
+        $(document).ready(function() {
+            var table = new DataTable('#entityTable', {
+                paging: true, 
+                ordering: true, 
+                searching: true, 
+                lengthMenu: [5, 10, 15, 20], 
+                language: {
+                    search: "Filtrar entidades: ",
+                    lengthMenu: "Mostrar _MENU_ ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ", 
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
+                    }
+                },
+                scrollY: '400px', 
+                scrollCollapse: true
+            });
+        });
+    </script>
     <style>
         td {
             font-size: 18px;
@@ -65,88 +148,5 @@ Response.Redirect("../Index");
         }
 
     </style>
-</head>
-<body>
-   <div class="container">
-        <table id="entityTable" class="display" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>Entidad</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><i class="fas fa-user-tie icon"></i><a asp-page="Entities/Agentes/Index">Agente</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-star icon"></i><a asp-page="Entities/Calificaciones/Index">Calificacion</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-users icon"></i><a asp-page="Entities/Clientes/Index">Cliente</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-comment icon"></i><a asp-page="Index">Comentario</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-file-signature icon"></i><a asp-page="Index">Contrato</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-check-circle icon"></i><a asp-page="Index">EstadoContrato</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">EstadoNotificacion</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-credit-card icon"></i><a asp-page="Index">EstadoPago</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-home icon"></i><a asp-page="Index">EstadoPropiedad</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">Notificacion</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-money-bill-wave icon"></i><a asp-page="Index">Pago</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-building icon"></i><a asp-page="Index">Propiedad</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-id-badge icon"></i><a asp-page="Index">Rol</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-cogs icon"></i><a asp-page="Index">TipoPropiedad</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-user icon"></i><a asp-page="Index">Usuario</a></td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-calendar-check icon"></i><a asp-page="Index">Visita</a></td>
-                </tr>
-            </tbody>
-        </table>
-   </div>
-
-    <script>
-        $(document).ready(function() {
-            var table = new DataTable('#entityTable', {
-                paging: true, 
-                ordering: true, 
-                searching: true, 
-                lengthMenu: [5, 10, 15, 20], 
-                language: {
-                    search: "Filtrar entidades: ",
-                    lengthMenu: "Mostrar _MENU_ ",
-                    info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ", 
-                    paginate: {
-                        previous: "Anterior",
-                        next: "Siguiente"
-                    }
-                },
-                scrollY: '400px', 
-                scrollCollapse: true
-            });
-        });
-    </script>
 </body>
 </html>

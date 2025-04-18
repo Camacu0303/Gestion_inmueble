@@ -76,9 +76,6 @@
 <style>
     /* Make the header sticky */
     header, .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000; /* Ensure it's above other content */
         background-color: white; /* Ensure the header stays visible */
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
     }
@@ -133,6 +130,7 @@
             padding: 20px;
         }
     }
+
 </style>
 
 </head>
@@ -149,15 +147,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Propiedades/Index">Propiedades</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Contratos/Index">Contratos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Clientes/Index">Clientes</a>
-                        </li>
+                        
                         @if (usuario != null && usuario.id_Rol == (int) RolEnum.Admin)
                         {
                             <li class="nav-item">
@@ -208,7 +198,7 @@
         @RenderBody()
     </main>
 
-   @*  <footer class="border-top footer text-muted bg-light mt-5 pt-4 pb-4">
+    <footer class="border-top text-muted bg-light mt-5 pt-4">
         <div class="container">
             <div class="row">
                 <!-- Columna 1: Empresa -->
@@ -253,7 +243,7 @@
                 &copy; @DateTime.Now.Year - HomeSpace. Todos los derechos reservados.
             </div>
         </div>
-    </footer> *@
+    </footer>
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

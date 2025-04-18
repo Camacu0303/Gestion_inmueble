@@ -12,6 +12,14 @@ namespace API_WIN_MAIN.Controllers
         {
         }
     }
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PropiedadesController : BaseController<Propiedad>
+    {
+        public PropiedadesController(AplicationDbContext context) : base(context)
+        {
+        }
+    }
 
     [Route("api/[controller]")]
     [ApiController]
@@ -67,14 +75,14 @@ namespace API_WIN_MAIN.Controllers
         }
     }
 
-    //[Route("api/[controller]")]
-    //[ApiController]
-    //public class ContratoController : BaseController<Contrato>
-    //{
-    //    public ContratoController(AplicationDbContext context) : base(context)
-    //    {
-    //    }
-    //}
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContratoController : BaseController<Contrato>
+    {
+        public ContratoController(AplicationDbContext context) : base(context)
+        {
+        }
+    }
 
     [Route("api/[controller]")]
     [ApiController]
