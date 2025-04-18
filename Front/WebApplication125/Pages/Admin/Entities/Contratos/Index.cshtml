@@ -1,7 +1,7 @@
 ﻿@page
-@model WEB.Pages.Admin.Entities.Propiedades.IndexModel
+@model WEB.Pages.Admin.Entities.Contratos.IndexModel
 @{
-    ViewData["Title"] = "Propiedad";
+    ViewData["Title"] = "Contrato";
     <div class="container mt-4">
         <!-- Mensaje de éxito -->
         @if (TempData["SuccessMessage"] != null)
@@ -10,7 +10,7 @@
         }
         <!-- Botón para abrir el modal -->
         <div>
-            <h1><i class="fas fa-user-tie icon"></i>Propiedades</h1>
+            <h1><i class="fas fa-user-tie icon"></i>Contratos</h1>
         </div>
         <div>
             <button class="btn mb-4" data-bs-toggle="modal" data-bs-target="#chartsModal">
@@ -50,47 +50,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- Tabla de clientes -->
         <div class="card shadow-sm">
             <div class="card-body">
-                @if (Model.Propiedades == null || !Model.Propiedades.Any())
+                @if (Model.Contratos == null || !Model.Contratos.Any())
                 {
-                    <div class="alert alert-warning">No hay Propiedades registradas</div>
+                    <div class="alert alert-warning">No hay Contratos registrados</div>
                 }
                 else
                 {
                     <div class="table-responsive">
-                        <table id="propiedadesTable" class="table table-hover">
+                        <table id="contratosTable" class="table table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID del propiedad</th>
-                                    <th>Detalle</th>
-                                    <th>Dirección</th>
-                                    <th>Precio</th>
-                                    <th>Tipo de propiedad</th>
+                                    <th>ID del Contrato</th>
+                                    <th>Propiedad</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Duración</th>
                                     <th>Estado</th>
-                                    <th>Arrendador</th>
                                     <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.Propiedades)
+                                @foreach (var item in Model.Contratos)
                                 {
                                     <tr>
-                                        <td>@item.id_propiedad</td>
-                                        <td>@item.nombre</td>
-                                        <td>@item.direccion</td>
-                                        <td>@item.precio</td>
-                                        <td>@item.TipoPropiedad.Nombre</td>
-                                        <td>@item.EstadoPropiedad.Nombre</td>
-                                        <td>@item.Usuario.Email</td>
+                                        <td>@item.id_contrato</td>
+                                        <td>@item.Propiedad.nombre</td>
+                                        <td>@item.Cliente.Email</td>
+                                        <td>@item.fecha</td>
+                                        <td>@item.monto</td>
+                                        <td>@item.duracion</td>
+                                        <td>@item.EstadoContrato.Nombre</td>
                                         <td class="text-end">
                                             <div class="d-flex gap-2">
-                                                <a asp-page="./Edit" asp-route-id="@item.id_propiedad" class="btn btn-primary btn-sm"
+                                                <a asp-page="./Edit" asp-route-id="@item.id_contrato" class="btn btn-primary btn-sm"
                                                    title="Editar">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                                        data-id="@item.id_propiedad" title="Eliminar">
+                                                        data-id="@item.id_contrato" title="Eliminar">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
 
@@ -115,7 +117,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    ¿Deseas eliminar el cliente seleccionado?
+                    ¿Deseas eliminar el contrato seleccionado?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -133,12 +135,10 @@
         }
     </style>
 }
-
-
 @section Scripts {
     <script>
          let deleteId = null;
-         let deleteEndpoint = 'Propiedades';
+         let deleteEndpoint = 'Cliente';
 
          $('#confirmDeleteModal').on('show.bs.modal', function (event) {
              const button = $(event.relatedTarget);
@@ -170,13 +170,13 @@
 
     <script>
         $(document).ready(function () {
-                var table = new DataTable('#propiedadesTable', {
+                var table = new DataTable('#contratosTable', {
                 paging: true,
                 ordering: true,
                 searching: true,
                 lengthMenu: [5, 10, 15, 20],
                 language: {
-                    search: "Filtrar clientes: ",
+                    search: "Filtrar contratos: ",
                     lengthMenu: "Mostrar _MENU_ ",
                     info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ",
                     paginate: {
@@ -189,107 +189,107 @@
                 jQueryUI: true
             });
 
-        var clientes = @Html.Raw(Json.Serialize(Model.Propiedades));
-        var presupuestos = clientes.map(c => c.presupuesto);
+            var clientes = @Html.Raw(Json.Serialize(Model.Contratos));
+        var presupuestos = clientes.map(c => c.monto);
 
         var barChart, pieChart, lineChart;
 
         $('#chartsModal').on('shown.bs.modal', function () {
-    if (barChart) barChart.destroy();
-    if (pieChart) pieChart.destroy();
-    if (lineChart) lineChart.destroy();
+            if (barChart) barChart.destroy();
+            if (pieChart) pieChart.destroy();
+            if (lineChart) lineChart.destroy();
 
-    var propiedades = @Html.Raw(Json.Serialize(Model.Propiedades));
+            // Rango de presupuesto
+            var barChartCtx = document.getElementById('barChart').getContext('2d');
+            barChart = new Chart(barChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-10K', '10K-50K', '50K-100K', '100K+'],
+                    datasets: [{
+                        label: 'Clientes por presupuesto',
+                        data: [
+                            presupuestos.filter(p => p >= 0 && p <= 10000).length,
+                            presupuestos.filter(p => p > 10000 && p <= 50000).length,
+                            presupuestos.filter(p => p > 50000 && p <= 100000).length,
+                            presupuestos.filter(p => p > 100000).length
+                        ],
+                        backgroundColor: '#4e73df',
+                        borderColor: '#4e73df',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
+            });
 
-    // --- Bar Chart: Rangos de precio ---
-    var precios = propiedades.map(p => p.precio);
+            var pieChartCtx = document.getElementById('pieChart').getContext('2d');
+            pieChart = new Chart(pieChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['0-10K', '10K-50K', '50K-100K', '100K+'],
+                    datasets: [{
+                        label: 'Distribución de presupuesto',
+                        data: [
+                            presupuestos.filter(p => p >= 0 && p <= 10000).length,
+                            presupuestos.filter(p => p > 10000 && p <= 50000).length,
+                            presupuestos.filter(p => p > 50000 && p <= 100000).length,
+                            presupuestos.filter(p => p > 100000).length
+                        ],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#e74a3b']
+                    }]
+                }
+            });
 
-    var barChartCtx = document.getElementById('barChart').getContext('2d');
-    barChart = new Chart(barChartCtx, {
-        type: 'bar',
-        data: {
-            labels: ['0-50K', '50K-100K', '100K-200K', '200K+'],
-            datasets: [{
-                label: 'Propiedades por rango de precio',
-                data: [
-                    precios.filter(p => p <= 50000).length,
-                    precios.filter(p => p > 50000 && p <= 100000).length,
-                    precios.filter(p => p > 100000 && p <= 200000).length,
-                    precios.filter(p => p > 200000).length
-                ],
-                backgroundColor: '#4e73df'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: { beginAtZero: true },
-                y: { beginAtZero: true }
-            }
-        }
-    });
-
-    // --- Pie Chart: Tipos de propiedad ---
-    var tipos = {};
-    propiedades.forEach(p => {
-        var tipo = p.tipoPropiedad?.nombre ?? 'Desconocido';
-        tipos[tipo] = (tipos[tipo] || 0) + 1;
-    });
-
-    var pieChartCtx = document.getElementById('pieChart').getContext('2d');
-    pieChart = new Chart(pieChartCtx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(tipos),
-            datasets: [{
-                label: 'Distribución por tipo',
-                data: Object.values(tipos),
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
-            }]
-        }
-    });
-
-    // --- Line Chart: Propiedades por arrendador ---
-    var arrendadores = {};
-    propiedades.forEach(p => {
-        var user = p.usuario?.email ?? 'Desconocido';
-        arrendadores[user] = (arrendadores[user] || 0) + 1;
-    });
-
-    var lineChartCtx = document.getElementById('lineChart').getContext('2d');
-    lineChart = new Chart(lineChartCtx, {
-        type: 'line',
-        data: {
-            labels: Object.keys(arrendadores),
-            datasets: [{
-                label: 'Propiedades por arrendador',
-                data: Object.values(arrendadores),
-                fill: false,
-                borderColor: '#4e73df',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    title: { display: true, text: 'Arrendador' },
-                    ticks: {
-                        callback: function (val, index) {
-                            const label = this.getLabelForValue(val);
-                            return label.length > 10 ? label.substring(0, 10) + '…' : label;
+            var lineChartCtx = document.getElementById('lineChart').getContext('2d');
+            lineChart = new Chart(lineChartCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '10K', '20K', '30K', '40K', '50K', '60K', '70K', '80K', '90K', '100K', '100K+'],
+                    datasets: [{
+                        label: 'Clientes',
+                        data: [
+                            presupuestos.filter(p => p >= 0 && p < 10000).length,
+                            presupuestos.filter(p => p >= 10000 && p < 20000).length,
+                            presupuestos.filter(p => p >= 20000 && p < 30000).length,
+                            presupuestos.filter(p => p >= 30000 && p < 40000).length,
+                            presupuestos.filter(p => p >= 40000 && p < 50000).length,
+                            presupuestos.filter(p => p >= 50000 && p < 60000).length,
+                            presupuestos.filter(p => p >= 60000 && p < 70000).length,
+                            presupuestos.filter(p => p >= 70000 && p < 80000).length,
+                            presupuestos.filter(p => p >= 80000 && p < 90000).length,
+                            presupuestos.filter(p => p >= 90000 && p < 100000).length,
+                            presupuestos.filter(p => p === 100000).length,
+                            presupuestos.filter(p => p > 100000).length
+                        ],
+                        fill: false,
+                        borderColor: '#4e73df',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Presupuesto (USD)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Clientes'
+                            }
                         }
                     }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Cantidad' }
                 }
-            }
-        }
-    });
-});
-
+            });
+        });
         });
     </script>
 

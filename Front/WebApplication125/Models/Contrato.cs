@@ -7,25 +7,25 @@ namespace API_WIN_MAIN.Models
     public class Contrato
     {
         [Key]
-        public int id_Contrato { get; set; }
+        public int id_contrato { get; set; }
 
         [ForeignKey("Propiedad")]
-        public int id_Propiedad { get; set; }
+        public int id_propiedad { get; set; }
 
         [ForeignKey("Cliente")]
-        public int id_Cliente { get; set; }
+        public int id_cliente { get; set; }
 
         [Required]
-        public DateTime Fecha { get; set; }
+        public DateTime fecha { get; set; }
 
         [Required]
-        public decimal Monto { get; set; }
+        public decimal monto { get; set; }
 
         [Required]
-        public int Duracion { get; set; } // Meses
+        public int duracion { get; set; } // Meses
 
         [ForeignKey("EstadoContrato")]
-        public int id_Estado { get; set; }
+        public int id_estado { get; set; }
 
         public Propiedad? Propiedad { get; set; }
         public Cliente? Cliente { get; set; }

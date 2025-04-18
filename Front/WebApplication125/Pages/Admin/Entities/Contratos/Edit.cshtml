@@ -1,5 +1,5 @@
 ﻿@page
-@model WEB.Pages.Agentes.CreateModel
+@model WEB.Pages.Admin.Entities.Contratos.EditModel
 @{
     ViewData["Title"] = "Agente";
 }
@@ -12,43 +12,33 @@
 
                     <form method="post">
                         <div class="form-floating-icon mb-3">
-                            <i class="fas fa-phone input-icon"></i>
-                            <input type="text" class="form-control" asp-for="Agente.Telefono" placeholder=" " />
-                            <label>Teléfono</label>
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Nombre" placeholder=" " />
+                            <label>Nombre</label>
                         </div>
 
                         <div class="form-floating-icon mb-3">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="number" class="form-control" asp-for="Agente.Experiencia" placeholder=" " />
-                            <label>Experiencia</label>
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Email" placeholder=" " />
+                            <label>Correo</label>
                         </div>
 
-                        @if (Model.Usuarios != null && Model.Usuarios.Any())
-                        {
-                            <div class="form-floating-icon mb-3">
-                                <i class="fas fa-envelope input-icon"></i>
-                                <select class="form-select pe-5 combo-buscable" asp-for="Agente.id_Usuario" id="usuarioSelect" required>
-                                    <option>Seleccione un usuario</option>
-                                    @foreach (var usuario in Model.Usuarios)
-                                    {
-                                        <option value="@usuario.id_Usuario">@usuario.Email</option>
-                                    }
-                                </select>
-                                <label for="usuarioSelect">Usuario</label>
-                                <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar usuario">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-
-
-                        }
-                        else
-                        {
-                            <div class="alert alert-danger" role="alert">
-                                No hay usuarios disponibles. No se puede enviar el formulario.
-                            </div>
-                        }
-
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Telefono" placeholder=" " />
+                            <label>Teléfono</label>
+                        </div>
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-money-bill input-icon"></i>
+                            <input type="number"
+                                   class="form-control"
+                                   asp-for="Cliente.Presupuesto"
+                                   placeholder=" "
+                                   min="0"
+                                   max="1000000"
+                                   step="250" />
+                            <label>Presupuesto</label>
+                        </div>
                         <div class="d-grid">
                             <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
                                 <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
@@ -97,53 +87,32 @@
         });
 
 
-        let tablaOpcionesDT = null;
-
         function cargarOpcionesEnModal($select) {
-            const $tabla = document.querySelector('#tablaOpcionesSelect');
+            const $tbody = $('#tablaOpcionesSelect tbody');
+            $tbody.empty();
 
-            // Destruir DataTable si existe
-            if (tablaOpcionesDT) {
-                tablaOpcionesDT.destroy();
-                tablaOpcionesDT = null;
-            }
-
-            // Limpiar completamente la tabla
-            $tabla.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Texto</th>
-                        <th>Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
-
-            const $tbody = $tabla.querySelector('tbody');
-
-            // Agregar filas desde el select
             $select.find('option').each(function () {
                 const val = $(this).val();
                 const text = $(this).text();
 
-                if (!val || val === '') return;
+                if (val === "") return; // saltar el option vacío
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${val}</td>
-                    <td>${text}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary seleccionar-opcion"
-                                data-value="${val}"
-                                data-text="${text}">Seleccionar</button>
-                    </td>
-                `;
-                $tbody.appendChild(row);
+                const $row = $(`
+                    <tr>
+                        <td>${val}</td>
+                        <td>${text}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                    data-value="${val}"
+                                    data-text="${text}">Seleccionar</button>
+                        </td>
+                    </tr>
+                `);
+                $tbody.append($row);
             });
 
-            // Reinicializar DataTable
-            tablaOpcionesDT = new DataTable('#tablaOpcionesSelect', {
+            var table = new DataTable('#tablaOpcionesSelect', {
+                destroy: true,
                 pageLength: 5,
                 language: {
                     search: "Buscar:",
@@ -156,10 +125,8 @@
                 }
             });
 
-            // Mostrar modal
             $('#modalBuscadorSelect').modal('show');
         }
-
 
         $(document).on('click', '.seleccionar-opcion', function () {
             const value = $(this).data('value');

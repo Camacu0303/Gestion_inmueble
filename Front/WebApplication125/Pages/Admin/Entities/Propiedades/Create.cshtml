@@ -1,24 +1,24 @@
 ﻿@page
 @model WEB.Pages.Admin.Entities.Propiedades.CreateModel
 @{
-    ViewData["Title"] = "Calificación";
+    ViewData["Title"] = "Propiedad";
 }
 <div class="container mt-4">
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="p-4 custom-card">
-                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Editar @ViewData["Title"]</h3>
+                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Crear @ViewData["Title"]</h3>
 
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         <div class="form-floating-icon mb-3">
-                            <i class="fas fa-house input-icon"></i>
+                            <i class="fas input-icon fa-home"></i>
                             <input type="text" class="form-control" asp-for="Propiedad.nombre" placeholder=" " />
                             <label>Detalle</label>
                         </div>
 
                         <div class="form-floating-icon mb-3">
-                            <i class="fas fa-location-dot input-icon"></i>
+                            <i class="fas fa-map-marker-alt input-icon"></i>
                             <input type="text" class="form-control" asp-for="Propiedad.direccion" placeholder=" " />
                             <label>Dirección</label>
                         </div>
@@ -32,13 +32,13 @@
                                    min="0"
                                    max="1000000"
                                    step="250" />
-                            <label>Presupuesto</label>
+                            <label>Precio</label>
                         </div>
 
                         @if (Model.TiposPropiedad != null && Model.TiposPropiedad.Any())
                         {
                             <div class="form-floating-icon mb-3">
-                                <i class="fas fa-envelope input-icon"></i>
+                                <i class="fas fa-truck-loading input-icon"></i>
                                 <select class="form-select pe-5 combo-buscable" asp-for="Propiedad.id_tipo" id="TipoSelect" required>
                                     <option>Seleccione Tipo de Renta</option>
                                     @foreach (var tipo in Model.TiposPropiedad)
@@ -62,7 +62,7 @@
                         @if (Model.EstadosPropiedad != null && Model.EstadosPropiedad.Any())
                         {
                             <div class="form-floating-icon mb-3">
-                                <i class="fas fa-envelope input-icon"></i>
+                                <i class="fas fa-question-circle input-icon"></i>
                                 <select class="form-select pe-5 combo-buscable" asp-for="Propiedad.id_estado" id="EstadoSelect" required>
                                     <option>Seleccione Estado</option>
                                     @foreach (var estado in Model.EstadosPropiedad)
@@ -70,7 +70,7 @@
                                         <option value="@estado.id_Estado">@estado.Nombre</option>
                                     }
                                 </select>
-                                <label for="EstadoSelect">Tipo de Propiedad</label>
+                                <label for="EstadoSelect">Estado de Propiedad</label>
                                 <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar Estado">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -98,8 +98,6 @@
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
-
-
                         }
                         else
                         {
@@ -107,7 +105,18 @@
                                 No hay usuarios disponibles. No se puede enviar el formulario.
                             </div>
                         }
-
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-info-circle input-icon-details"></i>
+                            <textarea class="form-control" asp-for="Propiedad.detalles" placeholder=" "></textarea>
+                            <label>Detalles</label>
+                        </div>
+                        <div class="form-control mb-3">
+                                <img src="@Model.Propiedad.imagen_url" style="max-height: 200px; border-radius: 8px;" />
+                        </div>
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-image input-icon"></i>
+                            <input type="file" class="form-control" asp-for="ImagenFile" />
+                        </div>
                         <div class="d-grid">
                             <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
                                 <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
@@ -145,6 +154,40 @@
 
 @section Scripts {
     <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('input[type="file"][name="ImagenFile"]');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    let imagePreview = fileInput.closest('form').querySelector('img');
+
+                    if (!imagePreview) {
+                        imagePreview = document.createElement('img');
+                        imagePreview.style.maxHeight = '200px';
+                        imagePreview.style.borderRadius = '8px';
+                        imagePreview.style.display = 'block';
+                        imagePreview.style.marginBottom = '1rem';
+
+                        // Insertar justo antes del input
+                        const container = fileInput.closest('.form-floating-icon');
+                        container.parentNode.insertBefore(imagePreview, container);
+                    }
+
+                    imagePreview.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+    });
+</script>
+
+    <script>
         let currentSelect = null;
 
         $(document).ready(function () {
@@ -156,46 +199,69 @@
         });
 
 
-        function cargarOpcionesEnModal($select) {
-            const $tbody = $('#tablaOpcionesSelect tbody');
-            $tbody.empty();
+       let tablaOpcionesDT = null;
 
-            $select.find('option').each(function () {
-                const val = $(this).val();
-                const text = $(this).text();
+function cargarOpcionesEnModal($select) {
+    const $tabla = document.querySelector('#tablaOpcionesSelect');
 
-                if (val === "") return; // saltar el option vacío
+    // Destruir DataTable si existe
+    if (tablaOpcionesDT) {
+        tablaOpcionesDT.destroy();
+        tablaOpcionesDT = null;
+    }
 
-                const $row = $(`
-                            <tr>
-                                <td>${val}</td>
-                                <td>${text}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary seleccionar-opcion"
-                                            data-value="${val}"
-                                            data-text="${text}">Seleccionar</button>
-                                </td>
-                            </tr>
-                        `);
-                $tbody.append($row);
-            });
-             
-            var table = new DataTable('#tablaOpcionesSelect', {
-                destroy: true,
-                pageLength: 5,
-                language: {
-                    search: "Buscar:",
-                    lengthMenu: "Mostrar _MENU_ registros",
-                    zeroRecords: "No se encontraron coincidencias",
-                    info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    paginate: {
-                        first: "Primero", last: "Último", next: "→", previous: "←"
-                    }
-                }
-            });
+    // Limpiar completamente la tabla
+    $tabla.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Texto</th>
+                <th>Seleccionar</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
 
-            $('#modalBuscadorSelect').modal('show');
+    const $tbody = $tabla.querySelector('tbody');
+
+    // Agregar filas desde el select
+    $select.find('option').each(function () {
+        const val = $(this).val();
+        const text = $(this).text();
+
+        if (!val || val === '') return;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${val}</td>
+            <td>${text}</td>
+            <td>
+                <button class="btn btn-sm btn-primary seleccionar-opcion"
+                        data-value="${val}"
+                        data-text="${text}">Seleccionar</button>
+            </td>
+        `;
+        $tbody.appendChild(row);
+    });
+
+    // Reinicializar DataTable
+    tablaOpcionesDT = new DataTable('#tablaOpcionesSelect', {
+        pageLength: 5,
+        language: {
+            search: "Buscar:",
+            lengthMenu: "Mostrar _MENU_ registros",
+            zeroRecords: "No se encontraron coincidencias",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+            paginate: {
+                first: "Primero", last: "Último", next: "→", previous: "←"
+            }
         }
+    });
+
+    // Mostrar modal
+    $('#modalBuscadorSelect').modal('show');
+}
+
 
         $(document).on('click', '.seleccionar-opcion', function () {
             const value = $(this).data('value');
@@ -207,5 +273,6 @@
 
             $('#modalBuscadorSelect').modal('hide');
         });
+            
     </script>
 }

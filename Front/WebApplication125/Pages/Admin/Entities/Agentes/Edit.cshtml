@@ -98,32 +98,53 @@
         });
 
 
-        function cargarOpcionesEnModal($select) {
-            const $tbody = $('#tablaOpcionesSelect tbody');
-            $tbody.empty();
+        let tablaOpcionesDT = null;
 
+        function cargarOpcionesEnModal($select) {
+            const $tabla = document.querySelector('#tablaOpcionesSelect');
+
+            // Destruir DataTable si existe
+            if (tablaOpcionesDT) {
+                tablaOpcionesDT.destroy();
+                tablaOpcionesDT = null;
+            }
+
+            // Limpiar completamente la tabla
+            $tabla.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Texto</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+
+            const $tbody = $tabla.querySelector('tbody');
+
+            // Agregar filas desde el select
             $select.find('option').each(function () {
                 const val = $(this).val();
                 const text = $(this).text();
 
-                if (val === "") return; // saltar el option vacío
+                if (!val || val === '') return;
 
-                const $row = $(`
-                    <tr>
-                        <td>${val}</td>
-                        <td>${text}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary seleccionar-opcion"
-                                    data-value="${val}"
-                                    data-text="${text}">Seleccionar</button>
-                        </td>
-                    </tr>
-                `);
-                $tbody.append($row);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${val}</td>
+                    <td>${text}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                data-value="${val}"
+                                data-text="${text}">Seleccionar</button>
+                    </td>
+                `;
+                $tbody.appendChild(row);
             });
 
-            var table = new DataTable('#tablaOpcionesSelect', {
-                destroy: true,
+            // Reinicializar DataTable
+            tablaOpcionesDT = new DataTable('#tablaOpcionesSelect', {
                 pageLength: 5,
                 language: {
                     search: "Buscar:",
@@ -136,8 +157,10 @@
                 }
             });
 
+            // Mostrar modal
             $('#modalBuscadorSelect').modal('show');
         }
+
 
         $(document).on('click', '.seleccionar-opcion', function () {
             const value = $(this).data('value');

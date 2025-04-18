@@ -26,7 +26,11 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("Usuario")]
         public int id_usuario { get; set; }
 
+        [MaxLength(1000)]
         public String? detalles { get; set; }
+
+        [MaxLength(255)]
+        public String imagen_url { get; set; }
 
         public virtual ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
         public virtual TipoPropiedad? TipoPropiedad { get; set; }

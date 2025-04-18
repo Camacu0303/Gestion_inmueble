@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Admin\Old\" />
     <Folder Include="Pages\Shared\Resources\" />
+    <Folder Include="wwwroot\CustomerImages\" />
   </ItemGroup>
 
 </Project>

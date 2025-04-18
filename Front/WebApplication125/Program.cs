@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using WEB.Util;
 using WebApplication125.Pages;
-using WebApplication125.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
