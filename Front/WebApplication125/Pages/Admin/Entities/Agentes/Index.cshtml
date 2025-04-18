@@ -1,14 +1,7 @@
 ﻿@page
-@model WEB.Pages.Admin.Entities.Agente.IndexModel
+@model WEB.Pages.Admin.Entities.Agentes.IndexModel
 @{
 ViewData["Title"] = "Agente";
-
-<link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <div class="container mt-4">
     <!-- Mensaje de éxito -->
     @if (TempData["SuccessMessage"] != null)
@@ -16,15 +9,16 @@ ViewData["Title"] = "Agente";
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
     }
     <!-- Botón para abrir el modal -->
-     <div>   
-             <h1><i class="fas fa-user-tie icon"></i> Agentes</h1>
+    <div>
+        <h1><i class="fas fa-user-tie icon"></i> Agentes</h1>
     </div>
     <div>
         <button class="btn mb-4" data-bs-toggle="modal" data-bs-target="#chartsModal">
             <i class="fas fa-chart-bar me-1"></i> Ver Gráficos
         </button>
-        <button class="btn mb-4">
-            <i class="fas fa-plus"></i> Agregar @ViewData["Title"]
+        <button class="btn mb-4" asp-page="./Edit">
+            <a class="text-white text-decoration-none" asp-page="./Create"><i class="fas fa-plus"></i> Agregar
+                @ViewData["Title"]</a>
         </button>
     </div>
 
@@ -70,6 +64,8 @@ ViewData["Title"] = "Agente";
                         <tr>
                             <th>ID del Agente</th>
                             <th>Teléfono</th>
+                            <th>Usuario</th>
+                            <th>Correo</th>
                             <th>Experiencia</th>
                             <th class="text-end">Acciones</th>
                         </tr>
@@ -80,22 +76,22 @@ ViewData["Title"] = "Agente";
                         <tr>
                             <td>@item.id_Agente</td>
                             <td>@item.Telefono</td>
+                            <td>@item.Usuario.Nombre</td>
+                            <td>@item.Usuario.Email</td>
                             <td>@item.Experiencia</td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm">
-                                    <a asp-page="./Edit" asp-route-id="@item.id_Agente" class="btn btn-outline-primary"
+                                <div class="d-flex gap-2">
+                                    <a asp-page="./Edit" asp-route-id="@item.id_Agente" class="btn btn-primary btn-sm"
                                         title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a asp-page="./Details" asp-route-id="@item.id_Agente" class="btn btn-outline-info"
-                                        title="Detalles">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a asp-page="./Delete" asp-route-id="@item.id_Agente" class="btn btn-outline-danger"
-                                        title="Eliminar">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+        data-id="@item.id_Agente" title="Eliminar">
+    <i class="fas fa-trash-alt"></i>
+</button>
+
                                 </div>
+
                             </td>
                         </tr>
                         }
@@ -106,6 +102,25 @@ ViewData["Title"] = "Agente";
         </div>
     </div>
 </div>
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Deseas eliminar el agente seleccionado?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Custom style for larger modal */
     .custom-modal-size {
@@ -117,6 +132,38 @@ ViewData["Title"] = "Agente";
 
 
 @section Scripts {
+    <script>
+    let deleteId = null;
+    let deleteEndpoint = 'Agente';
+
+    $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        deleteId = button.data('id');
+    });
+
+     $('#confirmDeleteBtn').on('click', function () {
+        if (!deleteId || !deleteEndpoint) return;
+
+        const url = `https://localhost:7094/api/${deleteEndpoint}/${deleteId}`;
+
+        fetch(url, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                // Cierra el modal y recarga la página
+                $('#confirmDeleteModal').modal('hide');
+                location.reload();
+            } else {
+                return response.text().then(msg => { throw new Error(msg); });
+            }
+        })
+        .catch(error => {
+            alert('Error al eliminar: ' + error.message);
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function () {
         var table = new DataTable('#agentesTable', {

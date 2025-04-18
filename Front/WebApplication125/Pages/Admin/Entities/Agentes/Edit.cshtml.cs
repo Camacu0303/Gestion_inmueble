@@ -16,17 +16,24 @@ namespace WEB.Pages.Agentes
 
         [BindProperty]
         public Agente Agente { get; set; } = default!;
-
+        
+        public List<Usuario>? Usuarios { get; set; }
         public string? ApiError { get; set; }
 
         // Cargar los datos del Agente en el formulario
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var client = _httpClient.CreateClient("ApiClient");
-            Agente = await client.GetFromJsonAsync<Agente>($"Agente/{id}");
+            Agente = await EntityService.GetByIdAsync<Agente>(client, id, "Agente");
 
             if (Agente == null)
+            {
                 return NotFound();
+            }
+            else {
+                Usuarios = await EntityService.GetAllAsync<Usuario>(client, "Usuario");
+                Usuarios.ForEach(p => p.Contraseña = null);
+            }
 
             return Page();
         }
@@ -35,22 +42,14 @@ namespace WEB.Pages.Agentes
         {
             var client = _httpClient.CreateClient("ApiClient");
 
-            // Load the existing entity from the database (same way as OnGetAsync)
-            var existingEntity = await client.GetFromJsonAsync<Agente>($"Agente/{id}");
+            
+            var existingEntity = await EntityService.GetByIdAsync<Agente>(client, id, "Agente");
             if (existingEntity == null)
             {
                 return NotFound();
             }
 
-            // Preserve original values for properties not on the form
             ValueHelper.PreserveOriginalValues(Agente, existingEntity);
-
-            // If the user didn't input a new password (the input field for password is absent),
-            // we ensure the original password is sent back to the API.
-            if (Agente.Usuario != null && string.IsNullOrEmpty(Agente.Usuario.Contraseña) && existingEntity.Usuario != null)
-            {
-                Agente.Usuario.Contraseña = existingEntity.Usuario.Contraseña;
-            }
 
             var response = await client.PutAsJsonAsync($"Agente/{id}", Agente);
             if (!response.IsSuccessStatusCode)

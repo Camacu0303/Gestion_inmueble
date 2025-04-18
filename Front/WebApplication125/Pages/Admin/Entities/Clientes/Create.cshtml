@@ -1,0 +1,142 @@
+﻿@page
+@model WEB.Pages.Admin.Entities.Clientes.CreateModel
+@{
+    ViewData["Title"] = "Calificación";
+}
+<div class="container mt-4">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="p-4 custom-card">
+                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Editar @ViewData["Title"]</h3>
+
+                    <form method="post">
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Nombre" placeholder=" " />
+                            <label>Nombre</label>
+                        </div>
+
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Email" placeholder=" " />
+                            <label>Correo</label>
+                        </div>
+
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Cliente.Telefono" placeholder=" " />
+                            <label>Teléfono</label>
+                        </div>
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-money-bill input-icon"></i>
+                            <input type="number"
+                                   class="form-control"
+                                   asp-for="Cliente.Telefono"
+                                   placeholder=" "
+                                   min="0"
+                                   max="1000000"
+                                   step="250" />
+                            <label>Presupuesto</label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
+                                <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalBuscadorSelect" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscar opción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table id="tablaOpcionesSelect" class="table table-bordered table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Texto</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentSelect = null;
+
+        $(document).ready(function () {
+            $('.buscar-select-btn').on('click', function () {
+                const $select = $(this).siblings('select.combo-buscable');
+                currentSelect = $select;
+                cargarOpcionesEnModal($select);
+            });
+        });
+
+
+        function cargarOpcionesEnModal($select) {
+            const $tbody = $('#tablaOpcionesSelect tbody');
+            $tbody.empty();
+
+            $select.find('option').each(function () {
+                const val = $(this).val();
+                const text = $(this).text();
+
+                if (val === "") return; // saltar el option vacío
+
+                const $row = $(`
+                            <tr>
+                                <td>${val}</td>
+                                <td>${text}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                            data-value="${val}"
+                                            data-text="${text}">Seleccionar</button>
+                                </td>
+                            </tr>
+                        `);
+                $tbody.append($row);
+            });
+             
+            var table = new DataTable('#tablaOpcionesSelect', {
+                destroy: true,
+                pageLength: 5,
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron coincidencias",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    paginate: {
+                        first: "Primero", last: "Último", next: "→", previous: "←"
+                    }
+                }
+            });
+
+            $('#modalBuscadorSelect').modal('show');
+        }
+
+        $(document).on('click', '.seleccionar-opcion', function () {
+            const value = $(this).data('value');
+            const text = $(this).data('text');
+
+            if (currentSelect) {
+                currentSelect.val(value).change();
+            }
+
+            $('#modalBuscadorSelect').modal('hide');
+        });
+    </script>
+}

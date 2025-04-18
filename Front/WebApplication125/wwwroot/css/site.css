@@ -1,77 +1,96 @@
 html {
-  font-size: 14px;
+font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+html {
+font-size: 16px;
+}
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+position: relative;
+min-height: 100%;
 }
 
 body {
-    margin-bottom: 60px;
-    background-color: #White;
+margin-bottom: 60px;
+background-color: #White;
 }
+
 .btn {
-    background-color: rgb(193, 72, 41) !important;
-    color: white !important;
+background-color: rgb(193, 72, 41) !important;
+color: white !important;
 }
-/* Estilo para los inputs con iconos */
+
+.input-group-text i {
+color: rgb(193, 72, 41);
+}
+
+.custom-card {
+border-radius: 15px;
+background-color: #ffffff;
+box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+}
+
 .form-floating-icon {
-    position: relative;
+position: relative;
 }
 
 .form-floating-icon input {
-    padding-left: 2.5rem; /* Espacio para el icono */
-    height: 3.5rem;
-    border-radius: 1.5rem; /* Bordes redondeados */
-    padding: 1rem;
-    font-size: 1.1rem;
-    border: 1px solid #ccc;
+padding-left: 2.5rem;
+height: 3.5rem;
 }
 
-/* Estilo del icono dentro del input */
 .form-floating-icon .input-icon {
-    position: absolute;
-    top: 50%;
-    left: 0.75rem;
-    transform: translateY(-50%);
-    color: rgb(193, 72, 41);
-    font-size: 1rem;
+position: absolute;
+top: 50%;
+left: 0.75rem;
+transform: translateY(-50%);
+color: rgb(193, 72, 41);
+font-size: 1rem;
 }
 
-/* Estilos del label */
-.form-floating-icon label {
-    position: absolute;
-    top: 50%;
-    left: 2.5rem;
-    transform: translateY(-50%);
-    transform-origin: left top;
-    transition: 0.2s ease all;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-/* Cuando el input está en foco */
 .form-floating-icon .form-control:focus ~ label,
 .form-floating-icon .form-control:not(:placeholder-shown) ~ label {
-    transform: scale(0.85) translateY(-2rem) translateX(0.5rem);
-    opacity: 1;
+transform: scale(0.85) translateY(-2rem) translateX(0.5rem);
+opacity: 1;
 }
 
-/* Estilo cuando el input recibe foco */
-.form-control:focus {
-    border-color: rgb(193, 72, 41);
-    box-shadow: 0 0 0 0.2rem rgba(193, 72, 41, 0.25);
+.form-floating-icon label {
+position: absolute;
+top: 50%;
+left: 2.5rem;
+transform: translateY(-50%);
+transform-origin: left top;
+transition: 0.2s ease all;
+opacity: 0.6;
+pointer-events: none;
 }
 
-</style >
+    /* Asegura el padding correcto para el select */
+    .form-floating-icon select.form-select {
+        padding-left: 2.5rem;
+        height: 3.5rem;
+        appearance: none;
+        background-color: #fff;
+    }
+        .form-floating-icon select.form-select:focus ~ label,
+        .form-floating-icon select.form-select:not(:placeholder-shown) ~ label,
+        .form-floating-icon select.form-select:valid ~ label {
+            transform: scale(0.85) translateY(-2rem) translateX(0.5rem);
+            opacity: 1;
+        }
+
+.form-floating-icon .input-icon {
+position: absolute;
+top: 50%;
+left: 0.75rem;
+transform: translateY(-50%);
+color: rgb(193, 72, 41);
+font-size: 1rem;
+}

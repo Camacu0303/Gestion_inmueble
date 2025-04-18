@@ -1,0 +1,152 @@
+﻿@page
+@model WEB.Pages.Agentes.CreateModel
+@{
+    ViewData["Title"] = "Agente";
+}
+<div class="container mt-4">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="p-4 custom-card">
+                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Editar @ViewData["Title"]</h3>
+
+                    <form method="post">
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="text" class="form-control" asp-for="Agente.Telefono" placeholder=" " />
+                            <label>Teléfono</label>
+                        </div>
+
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="number" class="form-control" asp-for="Agente.Experiencia" placeholder=" " />
+                            <label>Experiencia</label>
+                        </div>
+
+                        @if (Model.Usuarios != null && Model.Usuarios.Any())
+                        {
+                            <div class="form-floating-icon mb-3">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <select class="form-select pe-5 combo-buscable" asp-for="Agente.id_Usuario" id="usuarioSelect" required>
+                                    <option>Seleccione un usuario</option>
+                                    @foreach (var usuario in Model.Usuarios)
+                                    {
+                                        <option value="@usuario.id_Usuario">@usuario.Email</option>
+                                    }
+                                </select>
+                                <label for="usuarioSelect">Usuario</label>
+                                <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar usuario">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+
+
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                No hay usuarios disponibles. No se puede enviar el formulario.
+                            </div>
+                        }
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
+                                <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalBuscadorSelect" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscar opción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table id="tablaOpcionesSelect" class="table table-bordered table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Texto</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentSelect = null;
+
+        $(document).ready(function () {
+            $('.buscar-select-btn').on('click', function () {
+                const $select = $(this).siblings('select.combo-buscable');
+                currentSelect = $select;
+                cargarOpcionesEnModal($select);
+            });
+        });
+
+
+        function cargarOpcionesEnModal($select) {
+            const $tbody = $('#tablaOpcionesSelect tbody');
+            $tbody.empty();
+
+            $select.find('option').each(function () {
+                const val = $(this).val();
+                const text = $(this).text();
+
+                if (val === "") return; // saltar el option vacío
+
+                const $row = $(`
+                            <tr>
+                                <td>${val}</td>
+                                <td>${text}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                            data-value="${val}"
+                                            data-text="${text}">Seleccionar</button>
+                                </td>
+                            </tr>
+                        `);
+                $tbody.append($row);
+            });
+             
+            var table = new DataTable('#tablaOpcionesSelect', {
+                destroy: true,
+                pageLength: 5,
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron coincidencias",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    paginate: {
+                        first: "Primero", last: "Último", next: "→", previous: "←"
+                    }
+                }
+            });
+
+            $('#modalBuscadorSelect').modal('show');
+        }
+
+        $(document).on('click', '.seleccionar-opcion', function () {
+            const value = $(this).data('value');
+            const text = $(this).data('text');
+
+            if (currentSelect) {
+                currentSelect.val(value).change();
+            }
+
+            $('#modalBuscadorSelect').modal('hide');
+        });
+    </script>
+}

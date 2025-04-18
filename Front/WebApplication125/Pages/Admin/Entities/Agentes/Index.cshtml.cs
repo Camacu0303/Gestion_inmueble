@@ -1,8 +1,10 @@
+using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WEB.DTOs.AgenteDto;
+using WEB.Models;
+using WEB.Util;
 
-namespace WEB.Pages.Admin.Entities.Agente
+namespace WEB.Pages.Admin.Entities.Agentes
 {
     public class IndexModel : PageModel
     {
@@ -16,21 +18,22 @@ namespace WEB.Pages.Admin.Entities.Agente
             _logger = logger;
         }
 
-        public List<AgenteDto> Agentes { get; set; } = new List<AgenteDto>();
+        public List<Agente> Agentes { get; set; } = new List<Agente>();
 
         public async Task OnGetAsync()
         {
             try
             {
                 var client = _httpClient.CreateClient("ApiClient");
-                Agentes = await client.GetFromJsonAsync<List<AgenteDto>>("Agente") ?? new List<AgenteDto>();
+                Agentes = await EntityService.GetAllAsync<Agente>(client, "Agente");
 
-                Agentes = Agentes.Select(a => new AgenteDto
+                Agentes = Agentes.Select(a => new Agente
                 {
                     id_Agente = a.id_Agente,
                     id_Usuario = a.id_Usuario,
                     Telefono = a.Telefono,
-                    Experiencia = a.Experiencia
+                    Experiencia = a.Experiencia,
+                    Usuario= a.Usuario
                 }).ToList();
 
 

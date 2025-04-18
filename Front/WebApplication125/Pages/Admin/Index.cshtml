@@ -17,12 +17,6 @@ Response.Redirect("../Index");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real Estate Agency Entities</title>
-    <!-- Include DataTables CSS -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-
-    <!-- Include FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         td {
@@ -82,13 +76,13 @@ Response.Redirect("../Index");
             </thead>
             <tbody>
                 <tr>
-                    <td><i class="fas fa-user-tie icon"></i><a asp-page="Entities/Agente/Index">Agente</a></td>
+                    <td><i class="fas fa-user-tie icon"></i><a asp-page="Entities/Agentes/Index">Agente</a></td>
                 </tr>
                 <tr>
-                    <td><i class="fas fa-star icon"></i><a asp-page="Index">Calificacion</a></td>
+                    <td><i class="fas fa-star icon"></i><a asp-page="Entities/Calificaciones/Index">Calificacion</a></td>
                 </tr>
                 <tr>
-                    <td><i class="fas fa-users icon"></i><a asp-page="Index">Cliente</a></td>
+                    <td><i class="fas fa-users icon"></i><a asp-page="Entities/Clientes/Index">Cliente</a></td>
                 </tr>
                 <tr>
                     <td><i class="fas fa-comment icon"></i><a asp-page="Index">Comentario</a></td>
