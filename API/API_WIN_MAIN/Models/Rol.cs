@@ -6,7 +6,6 @@ namespace API_WIN_MAIN.Models
         [Key]
         public int id_Rol { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string Nombre { get; set; }
     }

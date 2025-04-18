@@ -1,0 +1,29 @@
+﻿@page
+@model WEB.Pages.Agentes.EditModel
+
+<div class="container mt-4">
+    <div>
+        <h1><i class="fas fa-user-tie icon"></i> Agente</h1>
+    </div>
+
+    <form method="post">
+        <!-- Campo para el teléfono del Agente (vinculado al Agente.Telefono) -->
+        <div class="form-floating-icon mb-3">
+            <i class="fas fa-phone input-icon"></i>
+            <input type="text" class="form-control" placeholder=" " asp-for="Agente.Telefono" />
+            <label>Teléfono</label>
+        </div>
+
+        <!-- Campo para la experiencia del Agente (vinculado al Agente.Experiencia) -->
+        <div class="form-floating-icon mb-3">
+            <i class="fas fa-briefcase input-icon"></i>
+            <input type="number" class="form-control" placeholder=" " asp-for="Agente.Experiencia" />
+            <label>Experiencia</label>
+        </div>
+
+        <!-- Botón de submit para actualizar el Agente -->
+        <div class="d-grid">
+            <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">Actualizar Agente</button>
+        </div>
+    </form>
+</div>

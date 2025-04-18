@@ -21,9 +21,9 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("Calificacion")]
         public int id_Calificacion { get; set; }
 
-        public Usuario Usuario { get; set; }
-        public Propiedad Propiedad { get; set; }
-        public Calificacion Calificacion { get; set; }
+        public Usuario? Usuario { get; set; }
+        public Propiedad? Propiedad { get; set; }
+        public Calificacion? Calificacion { get; set; }
     }
 
 }

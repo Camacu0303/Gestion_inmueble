@@ -1,0 +1,158 @@
+﻿@page
+@using WEB.Pages.Admin
+@using WEB.Util
+@model MantenimientoModel
+@{
+ViewData["Title"] = "Mantenimiento";
+var usuario = SessionUtil.GetUser(HttpContext);
+var apiUrl = Model.ApiBaseUrl;
+if (usuario == null || usuario.id_Rol==1)
+{
+Response.Redirect("../Index");
+}
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Agency Entities</title>
+    <!-- Include DataTables CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+    <!-- Include FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        td {
+            font-size: 18px;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .icon {
+            color: rgba(193, 72, 41, 1); /* Apply custom icon color */
+            margin-right: 10px;
+        }
+
+        a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .dataTables_filter {
+            position: sticky;
+            top: 0;
+            z-index: 1000; /* Ensure it's above other content */
+            background-color: white; /* Ensure the background is solid */
+            padding: 10px 0; /* Add some padding for better visual appearance */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+        }
+
+        /* Sticky header for the table */
+        .dataTables_scrollHead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #entityTable {
+            margin-top: 50px; /* Adjust this value based on the height of the sticky search bar */
+        }
+
+        .dataTables_wrapper {
+            padding-top: 50px; /* Adjust this value to ensure content below search bar doesn't overlap */
+        }
+
+        thead {
+            background-color: #f8f8f8;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+        }
+
+    </style>
+</head>
+<body>
+   <div class="container">
+        <table id="entityTable" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Entidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fas fa-user-tie icon"></i><a asp-page="Entities/Agente/Index">Agente</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-star icon"></i><a asp-page="Index">Calificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-users icon"></i><a asp-page="Index">Cliente</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-comment icon"></i><a asp-page="Index">Comentario</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-file-signature icon"></i><a asp-page="Index">Contrato</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-check-circle icon"></i><a asp-page="Index">EstadoContrato</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">EstadoNotificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-credit-card icon"></i><a asp-page="Index">EstadoPago</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-home icon"></i><a asp-page="Index">EstadoPropiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-bell icon"></i><a asp-page="Index">Notificacion</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-money-bill-wave icon"></i><a asp-page="Index">Pago</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-building icon"></i><a asp-page="Index">Propiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-id-badge icon"></i><a asp-page="Index">Rol</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-cogs icon"></i><a asp-page="Index">TipoPropiedad</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-user icon"></i><a asp-page="Index">Usuario</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-calendar-check icon"></i><a asp-page="Index">Visita</a></td>
+                </tr>
+            </tbody>
+        </table>
+   </div>
+
+    <script>
+        $(document).ready(function() {
+            var table = new DataTable('#entityTable', {
+                paging: true, 
+                ordering: true, 
+                searching: true, 
+                lengthMenu: [5, 10, 15, 20], 
+                language: {
+                    search: "Filtrar entidades: ",
+                    lengthMenu: "Mostrar _MENU_ ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ", 
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
+                    }
+                },
+                scrollY: '400px', 
+                scrollCollapse: true
+            });
+        });
+    </script>
+</body>
+</html>

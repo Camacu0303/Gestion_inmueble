@@ -20,9 +20,9 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("EstadoPago")]
         public int id_Estado { get; set; }
 
-        public Cliente Cliente { get; set; }
-        public Propiedad Propiedad { get; set; }
-        public EstadoPago EstadoPago { get; set; }
+        public Cliente? Cliente { get; set; }
+        public Propiedad? Propiedad { get; set; }
+        public EstadoPago? EstadoPago { get; set; }
     }
 
 }

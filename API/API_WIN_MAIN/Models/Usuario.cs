@@ -26,7 +26,7 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("Rol")]
         public int id_Rol { get; set; }
 
-        public Rol Rol { get; set; }
+        public Rol? Rol { get; set; }
     }
 }
 

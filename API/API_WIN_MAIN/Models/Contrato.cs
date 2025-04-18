@@ -27,9 +27,9 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("EstadoContrato")]
         public int id_Estado { get; set; }
 
-        public Propiedad Propiedad { get; set; }
-        public Cliente Cliente { get; set; }
-        public EstadoContrato EstadoContrato { get; set; }
+        public Propiedad? Propiedad { get; set; }
+        public Cliente? Cliente { get; set; }
+        public EstadoContrato? EstadoContrato { get; set; }
     }
 
 }

@@ -15,15 +15,14 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("Propiedad")]
         public int id_Propiedad { get; set; }
 
-        [Required]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
 
         [ForeignKey("Agente")]
         public int id_Agente { get; set; }
 
-        public Cliente Cliente { get; set; }
-        public Propiedad Propiedad { get; set; }
-        public Agente Agente { get; set; }
+        public Cliente? Cliente { get; set; }
+        public Propiedad? Propiedad { get; set; }
+        public Agente? Agente { get; set; }
     }
 
 }

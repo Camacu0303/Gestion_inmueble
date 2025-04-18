@@ -18,8 +18,8 @@ namespace API_WIN_MAIN.Models
         [ForeignKey("EstadoNotificacion")]
         public int id_Estado { get; set; }
 
-        public Usuario Usuario { get; set; }
-        public EstadoNotificacion EstadoNotificacion { get; set; }
+        public Usuario? Usuario { get; set; }
+        public EstadoNotificacion? EstadoNotificacion { get; set; }
     }
 
 }

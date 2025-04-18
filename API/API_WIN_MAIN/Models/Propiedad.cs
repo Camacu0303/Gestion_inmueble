@@ -27,9 +27,9 @@ namespace API_WIN_MAIN.Models
         public int id_Usuario { get; set; }
 
         public virtual ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
-        public virtual TipoPropiedad TipoPropiedad { get; set; }
-        public virtual EstadoPropiedad EstadoPropiedad { get; set; }
-        public virtual Usuario Usuario { get; set; }
+        public virtual TipoPropiedad? TipoPropiedad { get; set; }
+        public virtual EstadoPropiedad? EstadoPropiedad { get; set; }
+        public virtual Usuario? Usuario { get; set; }
     }
 
 }

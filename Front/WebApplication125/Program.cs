@@ -1,13 +1,15 @@
 using System.Net.Http.Headers;
+using WEB.Util;
 using WebApplication125.Pages;
 using WebApplication125.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
 builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7094/api/");
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    
 });
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
