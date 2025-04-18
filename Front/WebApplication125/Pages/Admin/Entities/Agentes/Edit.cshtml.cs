@@ -1,7 +1,6 @@
 using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WEB.DTOs.AgenteDto;
 using WEB.Util;
 
 namespace WEB.Pages.Agentes
