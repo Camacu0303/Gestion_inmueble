@@ -1,44 +1,108 @@
 ﻿@page
 @model WEB.Pages.Admin.Entities.Contratos.EditModel
 @{
-    ViewData["Title"] = "Agente";
+    ViewData["Title"] = "Contrato";
 }
 <div class="container mt-4">
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="p-4 custom-card">
-                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Editar @ViewData["Title"]</h3>
+                    <h3 class="text-center mb-4"><i class="fa fa-file-signature"></i>Editar @ViewData["Title"]</h3>
 
                     <form method="post">
-                        <div class="form-floating-icon mb-3">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-control" asp-for="Cliente.Nombre" placeholder=" " />
-                            <label>Nombre</label>
-                        </div>
 
-                        <div class="form-floating-icon mb-3">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="text" class="form-control" asp-for="Cliente.Email" placeholder=" " />
-                            <label>Correo</label>
-                        </div>
+                        @if (Model.Propiedades != null && Model.Propiedades.Any())
+                        {
+                            <div class="form-floating-icon mb-3">
+                                <i class="fas fa-home input-icon"></i>
+                                <select class="form-select pe-5 combo-buscable" asp-for="Contrato.id_propiedad" id="TipoSelect" required>
+                                    <option>Seleccione Propiedad</option>
+                                    @foreach (var tipo in Model.Propiedades)
+                                    {
+                                        <option value="@tipo.id_propiedad">@tipo.nombre</option>
+                                    }
+                                </select>
+                                <label for="TipoSelect">Propiedad</label>
+                                <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar Propiedad">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                No hay Propiedades Disponibles. No se puede enviar el formulario.
+                            </div>
+                        }
 
+                        @if (Model.Clientes != null && Model.Clientes.Any())
+                        {
+                            <div class="form-floating-icon mb-3">
+                                <i class="fas fa-user input-icon"></i>
+                                <select class="form-select pe-5 combo-buscable" asp-for="Contrato.id_cliente" id="TipoSelect" required>
+                                    <option>Seleccione Cliente</option>
+                                    @foreach (var tipo in Model.Clientes)
+                                    {
+                                        <option value="@tipo.id_Cliente">@tipo.Email</option>
+                                    }
+                                </select>
+                                <label for="TipoSelect">Cliente</label>
+                                <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar Cliente">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                No hay Clientes Disponibles. No se puede enviar el formulario.
+                            </div>
+                        }
                         <div class="form-floating-icon mb-3">
-                            <i class="fas fa-phone input-icon"></i>
-                            <input type="text" class="form-control" asp-for="Cliente.Telefono" placeholder=" " />
-                            <label>Teléfono</label>
+                            <i class="fas fa-calendar input-icon"></i>
+                            <input type="text" class="form-control flatpickr-fecha" asp-for="fecha" placeholder=" " />
+                            <label>Fecha</label>
                         </div>
                         <div class="form-floating-icon mb-3">
                             <i class="fas fa-money-bill input-icon"></i>
                             <input type="number"
                                    class="form-control"
-                                   asp-for="Cliente.Presupuesto"
+                                   asp-for="Contrato.monto"
                                    placeholder=" "
                                    min="0"
-                                   max="1000000"
-                                   step="250" />
+                                   max="1000000" />
                             <label>Presupuesto</label>
                         </div>
+                        <div class="form-floating-icon mb-3">
+                            <i class="fas fa-clock input-icon"></i>
+                            <input type="number" class="form-control" asp-for="Contrato.duracion" placeholder=" " min="0" max="1000000" />
+                            <label>Duración</label>
+                        </div>
+                        @if (Model.EstadosContrato != null && Model.EstadosContrato.Any())
+                        {
+                            <div class="form-floating-icon mb-3">
+                                <i class="fas fa-question-circle input-icon"></i>
+                                <select class="form-select pe-5 combo-buscable" asp-for="Contrato.id_estado" id="TipoSelect" required>
+                                    <option>Seleccione Estado</option>
+                                    @foreach (var tipo in Model.EstadosContrato)
+                                    {
+                                        <option value="@tipo.id_Estado">@tipo.Nombre</option>
+                                    }
+                                </select>
+                                <label for="TipoSelect">Estado</label>
+                                <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar Estado">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                No hay Estados de Contrato Disponibles. No se puede enviar el formulario.
+                            </div>
+                        }
+
                         <div class="d-grid">
                             <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
                                 <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
@@ -76,6 +140,7 @@
 
 @section Scripts {
     <script>
+
         let currentSelect = null;
 
         $(document).ready(function () {
@@ -84,35 +149,63 @@
                 currentSelect = $select;
                 cargarOpcionesEnModal($select);
             });
+
+            flatpickr(".flatpickr-fecha", {
+            dateFormat: "Y-m-d", 
+            allowInput: true
+            });
+            
+
         });
 
 
-        function cargarOpcionesEnModal($select) {
-            const $tbody = $('#tablaOpcionesSelect tbody');
-            $tbody.empty();
+         let tablaOpcionesDT = null;
 
+        function cargarOpcionesEnModal($select) {
+            const $tabla = document.querySelector('#tablaOpcionesSelect');
+
+            // Destruir DataTable si existe
+            if (tablaOpcionesDT) {
+                tablaOpcionesDT.destroy();
+                tablaOpcionesDT = null;
+            }
+
+            // Limpiar completamente la tabla
+            $tabla.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Texto</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+
+            const $tbody = $tabla.querySelector('tbody');
+
+            // Agregar filas desde el select
             $select.find('option').each(function () {
                 const val = $(this).val();
                 const text = $(this).text();
 
-                if (val === "") return; // saltar el option vacío
+                if (!val || val === '') return;
 
-                const $row = $(`
-                    <tr>
-                        <td>${val}</td>
-                        <td>${text}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary seleccionar-opcion"
-                                    data-value="${val}"
-                                    data-text="${text}">Seleccionar</button>
-                        </td>
-                    </tr>
-                `);
-                $tbody.append($row);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${val}</td>
+                    <td>${text}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                data-value="${val}"
+                                data-text="${text}">Seleccionar</button>
+                    </td>
+                `;
+                $tbody.appendChild(row);
             });
 
-            var table = new DataTable('#tablaOpcionesSelect', {
-                destroy: true,
+            // Reinicializar DataTable
+            tablaOpcionesDT = new DataTable('#tablaOpcionesSelect', {
                 pageLength: 5,
                 language: {
                     search: "Buscar:",

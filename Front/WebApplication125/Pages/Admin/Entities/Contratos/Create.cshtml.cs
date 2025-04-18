@@ -14,25 +14,48 @@ namespace WEB.Pages.Admin.Entities.Contratos
         {
             _httpClient = httpClient;
         }
+
         [BindProperty]
-        public Cliente Cliente { get; set; } = default!;
+        public Contrato Contrato { get; set; } = default!;
+
+        [BindProperty]
+        public String fecha { get; set; }
+        public List<Propiedad>? Propiedades { get; set; }
+        public List<Cliente>? Clientes { get; set; }
+        public List<EstadoContrato>? EstadosContrato { get; set; }
+
         public string? ApiError { get; set; }
-        public async Task<IActionResult> OnGetAsync()
+
+        public async Task<IActionResult> OnGetAsync(int id)
         {
+            var client = _httpClient.CreateClient("ApiClient");
+            // Formatear fecha al estilo yyyy-MM-dd
+            
+            Propiedades = await EntityService.GetAllAsync<Propiedad>(client, "Propiedades");
+            Clientes = await EntityService.GetAllAsync<Cliente>(client, "Cliente");
+            EstadosContrato = await EntityService.GetAllAsync<EstadoContrato>(client, "EstadoContrato");
+
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var client = _httpClient.CreateClient("ApiClient");
-            var response = await client.PostAsJsonAsync($"Cliente/", Cliente);
+
+            if (DateTime.TryParse(fecha, out var fechaParsed))
+            {
+                Contrato.fecha = fechaParsed;
+            }
+
+            var response = await client.PostAsJsonAsync($"Contrato/", Contrato);
+
             if (!response.IsSuccessStatusCode)
             {
                 ApiError = await response.Content.ReadAsStringAsync();
-                // Reload the agent data on failure to repopulate the form
-                Cliente = await client.GetFromJsonAsync<Cliente>($"Cliente/{id}");
+                Contrato = await client.GetFromJsonAsync<Contrato>($"Contrato/{id}");
                 return Page();
             }
-            // Redirect to the index page
+
             return RedirectToPage("./Index");
         }
     }

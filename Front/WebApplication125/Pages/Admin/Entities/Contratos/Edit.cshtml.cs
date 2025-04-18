@@ -14,45 +14,57 @@ namespace WEB.Pages.Admin.Entities.Contratos
         }
 
         [BindProperty]
-        public Cliente Cliente { get; set; } = default!;
-        
+        public Contrato Contrato { get; set; } = default!;
+
+        [BindProperty]
+        public String fecha { get; set; }
+        public List<Propiedad>? Propiedades { get; set; }
+        public List<Cliente>? Clientes { get; set; }
+        public List<EstadoContrato>? EstadosContrato { get; set; }
+
         public string? ApiError { get; set; }
 
-        // Cargar los datos del Agente en el formulario
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var client = _httpClient.CreateClient("ApiClient");
-            Cliente = await EntityService.GetByIdAsync<Cliente>(client, id, "Cliente");
-            if (Cliente == null)
-            {
+            Contrato = await EntityService.GetByIdAsync<Contrato>(client, id, "Contrato");
+
+            if (Contrato == null)
                 return NotFound();
-            }
+
+            // Formatear fecha al estilo yyyy-MM-dd
+            fecha = Contrato.fecha.ToString("yyyy-MM-dd");
+
+            Propiedades = await EntityService.GetAllAsync<Propiedad>(client, "Propiedades");
+            Clientes = await EntityService.GetAllAsync<Cliente>(client, "Cliente");
+            EstadosContrato = await EntityService.GetAllAsync<EstadoContrato>(client, "EstadoContrato");
+
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var client = _httpClient.CreateClient("ApiClient");
 
-            
-            var existingEntity = await EntityService.GetByIdAsync<Cliente>(client, id, "Cliente");
+            var existingEntity = await EntityService.GetByIdAsync<Contrato>(client, id, "Contrato");
             if (existingEntity == null)
-            {
                 return NotFound();
+
+            if (DateTime.TryParse(fecha, out var fechaParsed))
+            {
+                Contrato.fecha = fechaParsed;
             }
 
-            ValueHelper.PreserveOriginalValues(Cliente, existingEntity);
+            var response = await client.PutAsJsonAsync($"Contrato/{id}", Contrato);
 
-            var response = await client.PutAsJsonAsync($"Cliente/{id}", Cliente);
             if (!response.IsSuccessStatusCode)
             {
                 ApiError = await response.Content.ReadAsStringAsync();
-                Cliente = await client.GetFromJsonAsync<Cliente>($"Cliente/{id}");
+                Contrato = await client.GetFromJsonAsync<Contrato>($"Contrato/{id}");
                 return Page();
             }
 
-            // Redirect to the index page
             return RedirectToPage("./Index");
         }
-
     }
 }
