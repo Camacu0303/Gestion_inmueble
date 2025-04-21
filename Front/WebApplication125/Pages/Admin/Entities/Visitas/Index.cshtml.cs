@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WEB.Models;
 using WEB.Util;
-using static WebApplication125.Pages.Auth.RegisterModel;
 
 namespace WEB.Pages.Admin.Entities.Visitas
 {

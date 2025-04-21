@@ -25,9 +25,11 @@ namespace API_WIN_MAIN.Controllers
     [ApiController]
     public class UsuarioController : BaseController<Usuario>
     {
+        // Constructor que recibe el contexto y prepara el DbSet para uso posterior
         public UsuarioController(AplicationDbContext context) : base(context)
         {
         }
+
     }
 
     [Route("api/[controller]")]

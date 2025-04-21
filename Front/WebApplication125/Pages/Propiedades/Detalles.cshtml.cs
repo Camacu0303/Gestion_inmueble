@@ -2,9 +2,10 @@ using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WEB.Models;
+using WEB.Pages.Admin.Entities.Propiedades;
 using WEB.Util;
 
-namespace WEB.Pages.Admin.Entities.Propiedades
+namespace WEB.Pages.Propiedades
 {
     public class DetallesModel : PageModel
     {

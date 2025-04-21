@@ -1,3 +1,4 @@
+using API_WIN_MAIN.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
@@ -18,8 +19,8 @@ namespace WEB.Pages.Admin
 
         public void OnGet()
         {
-            ApiBaseUrl = _config["ApiUrl"];
+            ApiBaseUrl = _config["LocalUrl"];
         }
     }
-
+        
 }

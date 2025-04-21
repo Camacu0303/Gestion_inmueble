@@ -1,0 +1,319 @@
+﻿@page
+@model WEB.Pages.Admin.Entities.Usuarios.IndexModel
+@{
+    ViewData["Title"] = "Usuario";
+    <div class="container mt-4">
+        <!-- Mensaje de éxito -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        <!-- Botón para abrir el modal -->
+        <div>
+            <h1><i class="fas fa-user-tie icon"></i> Usuarios</h1>
+        </div>
+        <div>
+            <button class="btn mb-4" data-bs-toggle="modal" data-bs-target="#chartsModal">
+                <i class="fas fa-chart-bar me-1"></i> Ver Gráficos
+            </button>
+            <button class="btn mb-4" asp-page="./Edit">
+                <a class="text-white text-decoration-none" asp-page="./Create">
+                    <i class="fas fa-plus"></i> Agregar
+                    @ViewData["Title"]
+                </a>
+            </button>
+        </div>
+
+        <!-- Modal de gráficos -->
+        <div class="modal fade" id="chartsModal" tabindex="-1" aria-labelledby="chartsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg custom-modal-size">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chartsModalLabel">Estadísticas de Agentes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Adjust the row inside modal body -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                            <div class="col-md-4">
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                            <div class="col-md-4">
+                                <canvas id="lineChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para Enviar Correo de Reset -->
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="resetPasswordForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resetPasswordModalLabel">Enviar correo de recuperación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Deseas enviar un correo de recuperación de contraseña a este usuario?</p>
+                            <div class="form-group">
+                                <label for="resetEmail">Correo:</label>
+                                <input type="email" class="form-control" id="resetEmail" name="email" readonly />
+                                <input type="hidden" id="resetUserId" name="userId" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning">Enviar correo</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de agentes -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @if (Model.Usuarios == null || !Model.Usuarios.Any())
+                {
+                    <div class="alert alert-warning">No hay usuarios registrados</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table id="agentesTable" class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Rol</th>
+                                    <th>Contraseña</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Usuarios)
+                                {
+                                    <tr>
+                                        <td>@item.id_Usuario</td>
+                                        <td>@item.Nombre</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.Rol.Nombre</td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2">
+                                                <a asp-page="./ResetPassword" asp-route-id="@item.id_Usuario" class="btn btn-primary btn-sm" title="Reestablecer"><i class="fas fa-password"></i> Reestablecer Contraseña</a>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-flex gap-2">
+                                                <a asp-page="./Edit" asp-route-id="@item.id_Usuario" class="btn btn-primary btn-sm"
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                        data-bs-target="#confirmDeleteModal" data-id="@item.id_Usuario"
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Deseas eliminar el agente seleccionado?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="confirmDeleteBtn" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Custom style for larger modal */
+        .custom-modal-size {
+            max-width: 90%;
+            /* Adjust to your desired size */
+        }
+    </style>
+}
+
+
+@section Scripts {
+    <script>
+        let deleteId = null;
+        let deleteEndpoint = 'Usuario';
+
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            deleteId = button.data('id');
+        });
+
+        $('#confirmDeleteBtn').on('click', function () {
+            if (!deleteId || !deleteEndpoint) return;
+
+            const url = `https://localhost:7094/api/${deleteEndpoint}/${deleteId}`;
+
+            fetch(url, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Cierra el modal y recarga la página
+                        $('#confirmDeleteModal').modal('hide');
+                        location.reload();
+                    } else {
+                        return response.text().then(msg => { throw new Error(msg); });
+                    }
+                })
+                .catch(error => {
+                    alert('Error al eliminar: ' + error.message);
+                });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var table = new DataTable('#agentesTable', {
+                paging: true,
+                ordering: true,
+                searching: true,
+                lengthMenu: [5, 10, 15, 20],
+                language: {
+                    search: "Filtrar agentes: ",
+                    lengthMenu: "Mostrar _MENU_ ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entidades ",
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
+                    }
+                },
+                scrollY: '400px',
+                scrollCollapse: true,
+                jQueryUI: true
+            });
+
+            // Preparar los datos para los gráficos
+            var agentes = @Html.Raw(Json.Serialize(Model.Usuarios)); // Obtener los agentes desde el modelo
+            var experiencias = agentes.map(a => a.experiencia);
+
+            // Variables for storing chart instances
+            var barChart, pieChart, lineChart;
+
+            $('#chartsModal').on('shown.bs.modal', function () {
+                // Destroy any existing charts before creating new ones
+                if (barChart) barChart.destroy();
+                if (pieChart) pieChart.destroy();
+                if (lineChart) lineChart.destroy();
+
+                // Iniciar los gráficos cuando el modal se haya abierto
+
+                // Gráfico de barras
+                var barChartCtx = document.getElementById('barChart').getContext('2d');
+                barChart = new Chart(barChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['0-1', '2-5', '6-10', '11+'], // Rango de años de experiencia
+                        datasets: [{
+                            label: 'Número de Agentes',
+                            data: [
+                                experiencias.filter(exp => exp >= 0 && exp <= 1).length,
+                                experiencias.filter(exp => exp >= 2 && exp <= 5).length,
+                                experiencias.filter(exp => exp >= 6 && exp <= 10).length,
+                                experiencias.filter(exp => exp >= 11).length
+                            ],
+                            backgroundColor: '#4e73df',
+                            borderColor: '#4e73df',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Gráfico de pastel
+                var pieChartCtx = document.getElementById('pieChart').getContext('2d');
+                pieChart = new Chart(pieChartCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['0-1', '2-5', '6-10', '11+'],
+                        datasets: [{
+                            label: 'Distribución de experiencia',
+                            data: [
+                                experiencias.filter(exp => exp >= 0 && exp <= 1).length,
+                                experiencias.filter(exp => exp >= 2 && exp <= 5).length,
+                                experiencias.filter(exp => exp >= 6 && exp <= 10).length,
+                                experiencias.filter(exp => exp >= 11).length
+                            ],
+                            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#e74a3b']
+                        }]
+                    }
+                });
+
+                // Gráfico de línea
+                var lineChartCtx = document.getElementById('lineChart').getContext('2d');
+                lineChart = new Chart(lineChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                        datasets: [{
+                            label: 'Número de Agentes',
+                            data: Array.from({ length: 12 }, (_, i) => experiencias.filter(exp => exp === i).length),
+                            fill: false,
+                            borderColor: '#4e73df',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Años de experiencia'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Número de agentes'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+}

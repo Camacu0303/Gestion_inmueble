@@ -17,35 +17,12 @@ namespace WebApplication125.Pages
         }
 
         [BindProperty]
-        public Propiedad Propiedad { get; set; } = default!;
-
-        [BindProperty]
-        public IFormFile? ImagenFile { get; set; }
-
-        public List<EstadoPropiedad>? EstadosPropiedad { get; set; }
-        public List<TipoPropiedad>? TiposPropiedad { get; set; }
-        public List<Usuario>? Usuarios { get; set; }
-        public List<Propiedad>? Propiedades { get; set; }
-        public string? ApiError { get; set; }
-
-
+        public List<Propiedad>? Propiedades { get; set; } = new List<Propiedad>();
         public async Task OnGetAsync()
         {
             var client = _httpClient.CreateClient("ApiClient");
             Propiedades = await EntityService.GetAllAsync<Propiedad>(client, "Propiedades");                
-
-            EstadosPropiedad = await EntityService.GetAllAsync<EstadoPropiedad>(client, "EstadoPropiedad");
-            TiposPropiedad = await EntityService.GetAllAsync<TipoPropiedad>(client, "TipoPropiedad");
-            Usuarios = await EntityService.GetAllAsync<Usuario>(client, "Usuario");
-            Propiedades = await EntityService.GetAllAsync<Propiedad>(client, "Propiedades");
-
-            if (Propiedades == null || !Propiedades.Any())
-                ApiError = "No se encontraron propiedades.";
-
-            
         }
-
-
 
     }
 }
