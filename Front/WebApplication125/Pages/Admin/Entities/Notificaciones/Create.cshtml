@@ -44,7 +44,7 @@
                         @if (Model.EstadosNotificacion != null && Model.EstadosNotificacion.Any())
                         {
                             <div class="form-floating-icon mb-3">
-                                <i class="fas fa-star input-icon"></i>
+                                <i class="fas fa-question-circle input-icon"></i>
                                 <select class="form-select pe-5 combo-buscable" asp-for="Notificacion.id_Estado" id="TipoSelect" required>
                                     <option>Seleccione Estado</option>
                                     @foreach (var tipo in Model.EstadosNotificacion)
@@ -52,7 +52,7 @@
                                         <option value="@tipo.id_Estado">@tipo.Nombre</option>
                                     }
                                 </select>
-                                <label for="TipoSelect">Calificación</label>
+                                <label for="TipoSelect">Estado</label>
                                 <button type="button" class="btn btn-outline-secondary position-absolute end-0 top-0 h-100 buscar-select-btn" style="z-index: 2;" title="Buscar Estado">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -66,7 +66,7 @@
                         }
                         <div class="d-grid">
                             <button type="submit" class="btn" style="background-color: rgb(193, 72, 41); color: white;">
-                                <i class="fas fa-save me-2"></i>Actualizar  @ViewData["Title"]
+                                <i class="fas fa-save me-2"></i>Añadir  @ViewData["Title"]
                             </button>
                         </div>
                     </form>
