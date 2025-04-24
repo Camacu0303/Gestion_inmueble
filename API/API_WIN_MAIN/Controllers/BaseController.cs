@@ -30,6 +30,11 @@ namespace API_WIN_MAIN.Controllers
             _dbSet = context.Set<TEntity>(); // Vincula TEntity a su tabla correspondiente
         }
 
+        protected DbContext GetContext()
+        {
+            return _context;
+        }
+
         // GET: api/[controller]
         // Devuelve todas las entidades con sus propiedades de navegación incluidas automáticamente
         [HttpGet]
@@ -261,5 +266,6 @@ namespace API_WIN_MAIN.Controllers
                 .FirstOrDefault(p => p.Name.ToLower().Contains("id"));
             return idProperty?.GetValue(entity);
         }
+
     }
 }

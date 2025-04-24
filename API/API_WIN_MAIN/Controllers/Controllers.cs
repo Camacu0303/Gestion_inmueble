@@ -12,12 +12,58 @@ namespace API_WIN_MAIN.Controllers
         {
         }
     }
+
     [Route("api/[controller]")]
     [ApiController]
     public class PropiedadesController : BaseController<Propiedad>
     {
         public PropiedadesController(AplicationDbContext context) : base(context)
         {
+        }
+        [HttpGet("filtros")]
+        public async Task<IActionResult> FiltrarPropiedades(
+            string? nombre,
+            decimal? precioMin,
+            decimal? precioMax,
+            int? id_tipo,
+            int? id_estado,
+            string? direccion
+         
+        )
+        {
+            if (precioMin.HasValue && precioMax.HasValue && precioMin > precioMax)
+            {
+                return BadRequest("El precio mínimo no puede ser mayor que el precio máximo.");
+            }
+
+            var query = GetContext().Set <Propiedad>().AsQueryable();
+
+            if (!string.IsNullOrEmpty(nombre))
+                query = query.Where(p => p.nombre.ToLower().Contains(nombre.ToLower()));
+
+            if (!string.IsNullOrEmpty(direccion))
+                query = query.Where(p => p.direccion.ToLower().Contains(direccion.ToLower()));
+
+            if (precioMin.HasValue)
+                query = query.Where(p => p.precio >= precioMin.Value);
+
+            if (precioMax.HasValue)
+                query = query.Where(p => p.precio <= precioMax.Value);
+
+            if (id_tipo.HasValue)
+                query = query.Where(p => p.id_tipo == id_tipo.Value);
+
+            if (id_estado.HasValue)
+                query = query.Where(p => p.id_estado == id_estado.Value);
+
+            var resultado = await query
+                .Include(p => p.TipoPropiedad)
+                .Include(p => p.EstadoPropiedad)
+                .Include(p => p.Usuario)
+            
+                .ToListAsync();
+
+            return Ok(resultado);
         }
     }
 
