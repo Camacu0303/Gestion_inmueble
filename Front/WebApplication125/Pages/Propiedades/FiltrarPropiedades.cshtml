@@ -1,0 +1,275 @@
+﻿@page
+@model WEB.Pages.Propiedades.FiltrarPropiedadesModel
+@{
+    ViewData["Title"] = "Filtrar Propiedades";
+}
+<div class="container mt-4">
+    <div class="row justify-content-left">
+        <div class="col-md-4">
+            <div class="p-4 custom-card">
+                <form method="get">
+                    <h3 class="text-center mb-4"><i class="fas fa-user-tie me-2"></i>Crear @ViewData["Title"]</h3>
+                    <div class="filter-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" name="nombre" id="nombre" value="@Request.Query["nombre"]" class="form-control" />
+
+                        <label for="precioMin">Precio Mínimo:</label>
+                        <input type="number" name="precioMin" id="precioMin" value="@Request.Query["precioMin"]" class="form-control" />
+
+                        <label for="precioMax">Precio Máximo:</label>
+                        <input type="number" name="precioMax" id="precioMax" value="@Request.Query["precioMax"]" class="form-control" />
+                        @if (Model.tipos != null && Model.tipos.Any())
+                        {
+                            <div class="row mb-3">
+                                <div class="col-10">
+                                    <select class="form-select pe-5 combo-buscable" name="id_tipo" id="TipoSelect">
+                                        <option>Seleccione Tipo de Propiedad</option>
+                                        @foreach (var tipo in Model.tipos)
+                                        {
+                                            <option value="@tipo.id_Tipo">@tipo.Nombre</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" id="hiddenTipo" name="hiddenTipo" value="@Request.Query["id_tipo"]" />
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-secondary w-100 buscar-select-btn" style="z-index: 2;" title="Buscar Tipo de Propiedad">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Estados != null && Model.Estados.Any())
+                        {
+                            <div class="row mb-3">
+                                <div class="col-10">
+                                    <select class="form-select pe-5 combo-buscable" name="id_estado" id="EstadoSelect">
+                                        <option>Seleccione Estado de propiedad</option>
+                                        @foreach (var estado in Model.Estados)
+                                        {
+                                            <option value="@estado.id_Estado">@estado.Nombre</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" id="hiddenEstado" name="hiddenEstado" value="@Request.Query["id_estado"]" />
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-secondary w-100 buscar-select-btn" style="z-index: 2;" title="Buscar Estado de Propiedad">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" name="direccion" id="direccion" value="@Request.Query["direccion"]" class="form-control" />
+
+                        <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Properties Display (Grid of 4 properties per row) -->
+        <div class="col-md-8">
+            <div class="row">
+                @if (Model.Propiedades != null && Model.Propiedades.Count > 0)
+                {
+                    @foreach (var propiedad in Model.Propiedades)
+                    {
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="@(propiedad.imagen_url)" class="card-img-top" alt="@propiedad.nombre" style="height:200px; object-fit:cover;">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <h5 class="card-title">@propiedad.nombre</h5>
+                                    <a href="Detalles?id=@propiedad.id_propiedad" class="btn btn-primary mt-auto">Ver más detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-warning">No hay propiedades disponibles para mostrar.</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalBuscadorSelect" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscar opción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table id="tablaOpcionesSelect" class="table table-bordered table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Texto</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Custom CSS for sticky panel -->
+<style>
+    .sticky-panel {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 20px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-group label {
+        font-weight: bold;
+    }
+
+    .filter-group input,
+    .filter-group button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .card-img-top {
+        object-fit: cover;
+        height: 200px;
+    }
+
+    /* Ensures 4 properties per row on large screens */
+    @@media (min-width: 992px) {
+        .col-md-3 {
+            max-width: 25%;
+        }
+    }
+
+    /* Center properties in smaller screens */
+    @@media (max-width: 767px) {
+        .col-md-3 {
+            max-width: 50%;
+        }
+    }
+
+    @@media (max-width: 575px) {
+        .col-md-3 {
+            max-width: 100%;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Recuperar los valores de los selects
+            let tipoSeleccionado = document.getElementById('hiddenTipo').value;
+            let estadoSeleccionado = document.getElementById('hiddenEstado').value;
+
+            // Asignar los valores a los selects correspondientes
+            if (tipoSeleccionado) {
+                document.getElementById('TipoSelect').value = tipoSeleccionado;
+            }
+
+            if (estadoSeleccionado) {
+                document.getElementById('EstadoSelect').value = estadoSeleccionado;
+            }
+        });
+    </script>
+
+    <script>
+        let currentSelect = null;
+
+        $(document).ready(function () {
+            $('.buscar-select-btn').on('click', function () {
+                const $row = $(this).closest('.row'); // Buscar la fila que contiene el botón
+                const $select = $row.find('select.combo-buscable'); // Encontrar el select dentro de esa fila
+
+                currentSelect = $select;
+                cargarOpcionesEnModal($select);
+            });
+        });
+
+        let tablaOpcionesDT = null;
+
+        function cargarOpcionesEnModal($select) {
+            const $tabla = document.querySelector('#tablaOpcionesSelect');
+
+            // Destruir DataTable si existe
+            if (tablaOpcionesDT) {
+                tablaOpcionesDT.destroy();
+                tablaOpcionesDT = null;
+            }
+
+            // Limpiar completamente la tabla
+            $tabla.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Texto</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+
+            const $tbody = $tabla.querySelector('tbody');
+
+            // Agregar filas desde el select
+            $select.find('option').each(function () {
+                const val = $(this).val();
+                const text = $(this).text();
+
+                if (!val || val === '') return;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                            <td>${val}</td>
+                            <td>${text}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary seleccionar-opcion"
+                                        data-value="${val}"
+                                        data-text="${text}">Seleccionar</button>
+                            </td>
+                        `;
+                $tbody.appendChild(row);
+            });
+
+            // Reinicializar DataTable
+            tablaOpcionesDT = new DataTable('#tablaOpcionesSelect', {
+                pageLength: 5,
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron coincidencias",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    paginate: {
+                        first: "Primero", last: "Último", next: "→", previous: "←"
+                    }
+                }
+            });
+
+            // Mostrar modal
+            $('#modalBuscadorSelect').modal('show');
+        }
+
+        $(document).on('click', '.seleccionar-opcion', function () {
+            const value = $(this).data('value');
+            const text = $(this).data('text');
+
+            if (currentSelect) {
+                currentSelect.val(value).change();
+            }
+
+            $('#modalBuscadorSelect').modal('hide');
+        });
+    </script>
+}
